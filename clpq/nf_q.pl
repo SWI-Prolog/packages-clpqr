@@ -582,7 +582,7 @@ nf(Term,_) :-
 % If N is a number, N is normalized
 
 nf_number(N,Res) :-
-	number(N),
+	rational(N),
 	Rat is rationalize(N),
 	(   Rat =:= 0
 	->  Res = []
