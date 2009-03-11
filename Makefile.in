@@ -10,37 +10,31 @@ SHELL=@SHELL@
 PLBASE=@PLBASE@
 PLARCH=@PLARCH@
 PL=@PL@
+srcdir=@srcdir@
+DESTDIR=
+
 ifeq (@PROLOG_SYSTEM@,yap)
 prefix = @prefix@
 ROOTDIR = $(prefix)
 EROOTDIR = @exec_prefix@
-
-srcdir=@srcdir@
-
 BINDIR = $(EROOTDIR)/bin
 LIBDIR=$(EROOTDIR)/lib
 YAPLIBDIR=$(EROOTDIR)/lib/Yap
 SHAREDIR=$(ROOTDIR)/share/Yap
 CLPDIR=$(SHAREDIR)
-CLPRDIR=$(CLPDIR)/clpr
-CLPQDIR=$(CLPDIR)/clpq
-CLPQRDIR=$(CLPDIR)/clpqr
 EXDIR=$(CLPQRDIR)/clpqr/examples
-DESTDIR=
 else
 XPCEBASE=$(PLBASE)/xpce
 PKGDOC=$(PLBASE)/doc/packages
 PCEHOME=../../xpce
 LIBDIR=$(PLBASE)/library
 CLPDIR=$(LIBDIR)/clp
+EXDIR=$(PKGDOC)/examples/clpqr
+endif	#YAP/SWI
+
 CLPRDIR=$(CLPDIR)/clpr
 CLPQDIR=$(CLPDIR)/clpq
 CLPQRDIR=$(CLPDIR)/clpqr
-EXDIR=$(PKGDOC)/examples/clpqr
-
-endif	#YAP/SWI
-DESTDIR=
-
 
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
