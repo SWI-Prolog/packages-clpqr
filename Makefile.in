@@ -10,28 +10,49 @@ SHELL=@SHELL@
 PLBASE=@PLBASE@
 PLARCH=@PLARCH@
 PL=@PL@
+srcdir=@srcdir@
+DESTDIR=
+
+ifeq (@PROLOG_SYSTEM@,yap)
+prefix = @prefix@
+ROOTDIR = $(prefix)
+EROOTDIR = @exec_prefix@
+BINDIR = $(EROOTDIR)/bin
+LIBDIR=$(EROOTDIR)/lib
+YAPLIBDIR=$(EROOTDIR)/lib/Yap
+SHAREDIR=$(ROOTDIR)/share/Yap
+CLPDIR=$(SHAREDIR)
+EXDIR=$(CLPQRDIR)/clpqr/examples
+else
 XPCEBASE=$(PLBASE)/xpce
 PKGDOC=$(PLBASE)/doc/packages
 PCEHOME=../../xpce
 LIBDIR=$(PLBASE)/library
 CLPDIR=$(LIBDIR)/clp
+EXDIR=$(PKGDOC)/examples/clpqr
+endif	#YAP/SWI
+
 CLPRDIR=$(CLPDIR)/clpr
 CLPQDIR=$(CLPDIR)/clpq
 CLPQRDIR=$(CLPDIR)/clpqr
-EXDIR=$(PKGDOC)/examples/clpqr
-DESTDIR=
 
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 INSTALL_DATA=@INSTALL_DATA@
 
-CLPRPRIV=	bb_r.pl bv_r.pl fourmotz_r.pl ineq_r.pl \
-		itf_r.pl nf_r.pl store_r.pl
-CLPQPRIV=	bb_q.pl bv_q.pl fourmotz_q.pl ineq_q.pl \
-		itf_q.pl nf_q.pl store_q.pl
-CLPQRPRIV=	class.pl dump.pl geler.pl itf.pl ordering.pl \
+CLPRPRIV=	bb_r.pl bv_r.pl \
+		fourmotz_r.pl ineq_r.pl \
+		itf_r.pl nf_r.pl \
+		store_r.pl
+CLPQPRIV=	bb_q.pl bv_q.pl \
+		fourmotz_q.pl ineq_q.pl \
+		itf_q.pl nf_q.pl \
+		store_q.pl
+CLPQRPRIV=	class.pl dump.pl \
+		geler.pl itf.pl \
+		ordering.pl \
 		project.pl redund.pl
-LIBPL=		clpr.pl clpq.pl
+LIBPL=		$(srcdir)/clpr.pl $(srcdir)/clpq.pl
 EXAMPLES=	
 
 all::
@@ -43,10 +64,10 @@ install:	$(LIBPL)
 		mkdir -p $(DESTDIR)$(CLPQDIR)
 		mkdir -p $(DESTDIR)$(CLPQRDIR)
 		$(INSTALL_DATA) $(LIBPL) $(DESTDIR)$(CLPDIR)
-		(cd clpr && $(INSTALL_DATA) $(CLPRPRIV) $(DESTDIR)$(CLPRDIR))
-		(cd clpq && $(INSTALL_DATA) $(CLPQPRIV) $(DESTDIR)$(CLPQDIR))
-		(cd clpqr && $(INSTALL_DATA) $(CLPQRPRIV) $(DESTDIR)$(CLPQRDIR))
-		$(INSTALL_DATA) README $(DESTDIR)$(CLPQRDIR)
+		(cd $(srcdir)/clpr && $(INSTALL_DATA) $(CLPRPRIV) $(DESTDIR)$(CLPRDIR))
+		(cd $(srcdir)/clpq && $(INSTALL_DATA) $(CLPQPRIV) $(DESTDIR)$(CLPQDIR))
+		(cd $(srcdir)/clpqr && $(INSTALL_DATA) $(CLPQRPRIV) $(DESTDIR)$(CLPQRDIR))
+		$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(CLPQRDIR)
 
 rpm-install:	install
 
