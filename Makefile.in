@@ -39,6 +39,8 @@ CLPQRDIR=$(CLPDIR)/clpqr
 INSTALL=@INSTALL@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 INSTALL_DATA=@INSTALL_DATA@
+LN_INSTALL_DATA=$(shell echo `pwd`/../ln-install)
+LN_INSTALL_PROGRAM=$(shell echo `pwd`/../ln-install)
 
 CLPRPRIV=	bb_r.pl bv_r.pl \
 		fourmotz_r.pl ineq_r.pl \
@@ -53,7 +55,7 @@ CLPQRPRIV=	class.pl dump.pl \
 		ordering.pl \
 		project.pl redund.pl
 LIBPL=		$(srcdir)/clpr.pl $(srcdir)/clpq.pl
-EXAMPLES=	
+EXAMPLES=
 
 all::
 		@echo "Nothing to be done for this package"
@@ -68,6 +70,9 @@ install:	$(LIBPL)
 		(cd $(srcdir)/clpq && $(INSTALL_DATA) $(CLPQPRIV) $(DESTDIR)$(CLPQDIR))
 		(cd $(srcdir)/clpqr && $(INSTALL_DATA) $(CLPQRPRIV) $(DESTDIR)$(CLPQRDIR))
 		$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(CLPQRDIR)
+
+ln-install::
+		@$(MAKE) INSTALL_DATA=$(LN_INSTALL_DATA) INSTALL_PROGRAM=$(LN_INSTALL_PROGRAM) install
 
 rpm-install:	install
 
