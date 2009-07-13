@@ -254,18 +254,58 @@ submit_eq_c(A,B,Rest) :-
 %
 % Handles case c1 of submit_eq/1
 
-% case c11: k+cX^1=0 or k+cX^-1=0
-submit_eq_c1([],v(K,[X^P]),I) :-
-	var(X),
-	(   P =:= 1,
-	    !,
-	    Val is -I/K,
-	    export_binding(X,Val)
-	;   P =:= -1,
-	    !,
-	    Val is -K/I,
-	    export_binding(X,Val)
-	).
+% case c11a: 
+% i+kX^p=0 if p is an odd integer 
+% special case: one solution if P is negativ but also for a negative X
+submit_eq_c1([], v(K,[X^P]), I) :-
+    var(X),
+    P =\= 0,
+    0 > (-I/K),
+    integer(P) =:= P,
+	1 =:= integer(P) mod 2,
+	!,
+	Val is -((I/K) ** (1/P)),
+	export_binding(X,Val).
+% case c11b: 
+% i+kX^p=0 for p =\= 0, integer(P) =:= P
+% special case: generate 2 solutions if p is a positive even integer
+submit_eq_c1([], v(K,[X^P]), I) :-
+    var(X),
+    P =\= 0,
+    0 =< (-I/K),
+    integer(P) =:= P, 
+	0 =:= integer(P) mod 2,
+	!,
+	Val is (-I/K) ** (1/P),
+	(	export_binding(X,Val)
+	;   
+		ValNeg is -Val,
+		export_binding(X, ValNeg)
+    ).
+% case c11c: 
+% i+kX^p=0 for p =\= 0, 0 =< (-I/K)
+submit_eq_c1([], v(K,[X^P]), I) :-
+    var(X),
+    P =\= 0,
+    0 =< (-I/K),
+	!,
+	Val is (-I/K) ** (1/P),
+	export_binding(X,Val).
+% case c11d: fail if var(X) and none of the above.
+submit_eq_c1([], v(_K,[X^_P]), _I) :-
+    var(X),
+    !,
+    fail.
+% case c11e: fail for { -25 = _X^2.5 } and { -25 = _X^(-2.5) } and may be others!
+%			 if you uncomment this case { -25 = _X^2.5 } throw an error(evaluation_error(undefined))
+%			 and { -25 = _X^(-2.5) } succeed with an unbound X
+submit_eq_c1([], v(K,[X^P]), I) :-
+    nonvar(X),
+    1 =:= abs(P),
+    0 >= I,
+    0 >= K,
+    !,
+    fail.
 % case c12: non-linear, invertible: cNL(X)^1+k=0 => inv(NL)(-k/c) = 0 ; 
 %				    cNL(X)^-1+k=0 => inv(NL)(-c/k) = 0
 submit_eq_c1([],v(K,[NL^P]),I) :-
