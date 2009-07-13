@@ -1,4 +1,4 @@
-/*  
+/*
 
     Part of CLP(Q,R) (Constraint Logic Programming over Rationals and Reals)
 
@@ -48,7 +48,16 @@
 	    clp_type/2
 	]).
 
-clp_type(Var,Type) :- 
+%%	attribute_goals(@V)// is det.
+%
+%	Translate  attributes  back  into  goals.    This   is  used  by
+%	copy_term/3, which also determines  the   toplevel  printing  of
+%	residual constraints.
+
+attribute_goals(V) -->
+	dump_linear(V).
+
+clp_type(Var,Type) :-
 	(   get_attr(Var,itf,Att)
 	->  arg(1,Att,Type)
 	;   get_attr(Var,geler,Att)
@@ -99,7 +108,7 @@ dump_nonzero(_) --> [].
 dump_nz(clpq,V,H,I) --> bv_q:dump_nz(V,H,I).
 dump_nz(clpr,V,H,I) --> bv_r:dump_nz(V,H,I).
 
-attr_unify_hook(t(CLP,n,n,n,n,n,n,n,_,_,_),Y) :- 
+attr_unify_hook(t(CLP,n,n,n,n,n,n,n,_,_,_),Y) :-
 	!,
 	(   get_attr(Y,itf,AttY),
 	    \+ arg(1,AttY,CLP)
@@ -113,7 +122,7 @@ attr_unify_hook(t(CLP,Ty,St,Li,Or,Cl,_,No,_,_,_),Y) :-
 	->  throw(error(permission_error('mix CLP(Q) variables with',
 		'CLP(R) variables:',Y),context(_)))
 	;   true
-	),	
+	),
 	do_checks(CLP,Y,Ty,St,Li,Or,Cl,No,Later),
 	maplist(call,Later).
 
