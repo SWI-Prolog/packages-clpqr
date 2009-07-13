@@ -1,3 +1,11 @@
+[Mar 30 2009]
+
+ * FIXED: alarm handling on Win64 (Kerri Haris)
+   
+[Nov 21 2008]
+
+ * FIXED: wakeup issue in S_LIST and H_LIST_FF instructions.  Matt Lilley.
+   
 [Nov 21 2008]
 
  * FIXED: wakeup issue in S_LIST and H_LIST_FF instructions.  Matt Lilley.
