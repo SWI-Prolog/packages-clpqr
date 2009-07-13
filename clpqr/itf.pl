@@ -55,7 +55,16 @@
 %	residual constraints.
 
 attribute_goals(V) -->
-	dump_linear(V).
+	{ phrase(dump_linear(V), List),
+	  list_to_conj(List, Conj)
+	},
+	[ {}(Conj) ].
+
+list_to_conj([], true) :- !.
+list_to_conj([X], X) :- !.
+list_to_conj([H|T0], (H,T)) :-
+	list_to_conj(T0, T).
+
 
 clp_type(Var,Type) :-
 	(   get_attr(Var,itf,Att)
