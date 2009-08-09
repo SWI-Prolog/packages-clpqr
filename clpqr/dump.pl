@@ -301,3 +301,25 @@ copy(N,T,C,D0,D2) :-
 	copy(At,Ac,D0,D1),
 	N1 is N-1,
 	copy(N1,T,C,D1,D2).
+
+%%	attribute_goals(@V)// is det.
+%
+%	Translate  attributes  back  into  goals.    This   is  used  by
+%	copy_term/3, which also determines  the   toplevel  printing  of
+%	residual constraints.
+
+itf:attribute_goals(V) -->
+	(   { term_attvars(V, Vs),
+	      dump(Vs, Vs, List),
+	      list_to_conj(List, Conj) }
+	->  [ {}(Conj) ]
+	;   []
+	).
+
+class:attribute_goals(_) --> [].
+
+
+list_to_conj([], true) :- !.
+list_to_conj([X], X) :- !.
+list_to_conj([H|T0], (H,T)) :-
+	list_to_conj(T0, T).
