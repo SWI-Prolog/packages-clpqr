@@ -318,6 +318,7 @@ itf:attribute_goals(V) -->
 
 class:attribute_goals(_) --> [].
 
+geler:attribute_goals(V) --> itf:attribute_goals(V).
 
 list_to_conj([], true) :- !.
 list_to_conj([X], X) :- !.
