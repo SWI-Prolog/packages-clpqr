@@ -1,3 +1,20 @@
+[Sep 16 2009]
+
+ * ENHANCED: CLP(Q/R): Correct residual goals for suspendend non-linear
+   constraints.
+   
+[Aug 9 2009]
+
+ * ENHANCED: CLP(Q/R): Working residual goals with copy_term/3. Please review.
+   
+[Mar 30 2009]
+
+ * FIXED: alarm handling on Win64 (Kerri Haris)
+   
+[Nov 21 2008]
+
+ * FIXED: wakeup issue in S_LIST and H_LIST_FF instructions.  Matt Lilley.
+   
 [Mar 30 2009]
 
  * FIXED: alarm handling on Win64 (Kerri Haris)
