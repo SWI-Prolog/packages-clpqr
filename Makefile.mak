@@ -1,7 +1,7 @@
 ################################################################
 # Install CLP(R) stuff for the MS-Windows build
 # Author: Jan Wielemaker
-# 
+#
 # Use:
 #	nmake /f Makefile.mak
 #	nmake /f Makefile.mak install
@@ -15,7 +15,7 @@ CLPDIR=$(LIBDIR)\clp
 CLPRDIR=$(CLPDIR)\clpr
 CLPQDIR=$(CLPDIR)\clpq
 CLPQRDIR=$(CLPDIR)\clpqr
-PL="$(PLHOME)\bin\plcon.exe"
+PL="$(PLHOME)\bin\swipl.exe"
 
 CLPRPRIV=	bb_r.pl bv_r.pl fourmotz_r.pl ineq_r.pl \
 		itf_r.pl nf_r.pl store_r.pl
@@ -24,7 +24,7 @@ CLPQPRIV=	bb_q.pl bv_q.pl fourmotz_q.pl ineq_q.pl \
 CLPQRPRIV=	class.pl dump.pl geler.pl itf.pl ordering.pl \
 		project.pl redund.pl
 LIBPL=		clpr.pl clpq.pl
-EXAMPLES=	
+EXAMPLES=
 
 all::
 		@echo "Nothing to be done for this package"
@@ -47,7 +47,7 @@ install::
 		@for %f in ($(CLPQPRIV)) do \
 		    copy "clpq\%f" "$(CLPQDIR)"
 		@for %f in ($(CLPQRPRIV)) do \
-		    copy "clpqr\%f" "$(CLPQRDIR)"        
+		    copy "clpqr\%f" "$(CLPQRDIR)"
 		copy README "$(CLPQRDIR)\README.TXT"
 !ENDIF
 
@@ -66,7 +66,7 @@ uninstall::
 		@for %f in ($(CLPRPRIV)) do \
 		    del "$(CLPRDIR)\%f"
 		@for %f in ($(CLPQPRIV)) do \
-		    del "$(CLPQDIR)\%f"    
+		    del "$(CLPQDIR)\%f"
 		@for %f in ($(CLPQRPRIV)) do \
 		    del "$(CLPQRDIR)\%f"
 		del "$(CLPQRDIR)\README.TXT"
