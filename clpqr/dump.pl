@@ -1,7 +1,7 @@
 /*  $Id$
 
     Part of CLP(Q,R) (Constraint Logic Programming over Rationals and Reals)
-    
+
     Author:        Leslie De Koninck
     E-mail:        Leslie.DeKoninck@cs.kuleuven.be
     WWW:           http://www.swi-prolog.org
@@ -72,7 +72,7 @@
 	    ordering/1
 	]).
 
-% dump(Target,NewVars,Constraints)
+%% dump(+Target,-NewVars,-Constraints) is det.
 %
 % Returns in <Constraints>, the constraints that currently hold on Target where
 % all variables in <Target> are copied to new variables in <NewVars> and the
@@ -310,7 +310,8 @@ copy(N,T,C,D0,D2) :-
 
 itf:attribute_goals(V) -->
 	(   { term_attvars(V, Vs),
-	      dump(Vs, Vs, List),
+	      dump(Vs, NVs, List),
+	      NVs = Vs,
 	      list_to_conj(List, Conj) }
 	->  [ {}(Conj) ]
 	;   []
