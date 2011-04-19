@@ -312,6 +312,7 @@ itf:attribute_goals(V) -->
 	(   { term_attvars(V, Vs),
 	      dump(Vs, NVs, List),
 	      NVs = Vs,
+	      del_itf(Vs),
 	      list_to_conj(List, Conj) }
 	->  [ {}(Conj) ]
 	;   []
@@ -320,6 +321,12 @@ itf:attribute_goals(V) -->
 class:attribute_goals(_) --> [].
 
 geler:attribute_goals(V) --> itf:attribute_goals(V).
+
+del_itf([]).
+del_itf([H|T]) :-
+	del_attr(H, itf),
+	del_itf(T).
+
 
 list_to_conj([], true) :- !.
 list_to_conj([X], X) :- !.
