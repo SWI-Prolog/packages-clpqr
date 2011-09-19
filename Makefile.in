@@ -11,6 +11,7 @@ PLBASE=@PLBASE@
 PLARCH=@PLARCH@
 PL=@PL@
 srcdir=@srcdir@
+TXTEXT=@TXTEXT@
 
 ifeq (@PROLOG_SYSTEM@,yap)
 prefix = @prefix@
@@ -68,7 +69,7 @@ install:	$(LIBPL)
 		(cd $(srcdir)/clpr && $(INSTALL_DATA) $(CLPRPRIV) $(DESTDIR)$(CLPRDIR))
 		(cd $(srcdir)/clpq && $(INSTALL_DATA) $(CLPQPRIV) $(DESTDIR)$(CLPQDIR))
 		(cd $(srcdir)/clpqr && $(INSTALL_DATA) $(CLPQRPRIV) $(DESTDIR)$(CLPQRDIR))
-		$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(CLPQRDIR)
+		$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(CLPQRDIR)/README$(TXTEXT)
 
 ln-install::
 		@$(MAKE) INSTALL_DATA=$(LN_INSTALL_DATA) INSTALL_PROGRAM=$(LN_INSTALL_PROGRAM) install
