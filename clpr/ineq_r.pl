@@ -642,7 +642,8 @@ udls(t_l(L),X,Lin,Bound,Sold) :-
 	;   % equal to lowerbound: check strictness
 	    Strict is Sold \/ 2,
 	    get_attr(X,itf,Att),
-	    arg(3,Att,strictness(Strict))
+	    % arg(3,Att,strictness(Strict))
+	    setarg(3,Att,strictness(Strict))
 	).
 udls(t_u(U),X,Lin,Bound,Sold) :-
 	U - Bound > 1.0e-10,	% smaller than upperbound: set new bound

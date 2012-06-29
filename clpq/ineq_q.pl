@@ -618,7 +618,17 @@ udls(t_l(L),X,Lin,Bound,Sold) :-
 	;   % equal to lowerbound: check strictness
 	    Strict is Sold \/ 2,
 	    get_attr(X,itf,Att),
-	    arg(3,Att,strictness(Strict))
+	    % Fred Mesnard: Previous SWI clp(q) code was:
+	    % arg(3,Att,strictness(Strict))    
+	    % but we had a bug. The following constraint fails while it shouldn't:
+	    % {X1-X2-X4+A=0,X5=B, -X1+X2-X3+B=0, X3+X4+X5+P1>=1, X3>=0, X4>=0, P1>=0, 
+	    %  Y3+Y4-Y6=A, Y1-Y2-Y4=0, -Y1+Y2-Y3=0, Y6>=0, Y6>0}.
+	    % Note that it succeeds when inverting the last two atomic constraints:
+	    % {X1-X2-X4+A=0,X5=B, -X1+X2-X3+B=0, X3+X4+X5+P1>=1, X3>=0, X4>=0, P1>=0, 
+	    %  Y3+Y4-Y6=A, Y1-Y2-Y4=0, -Y1+Y2-Y3=0, Y6>0, Y6>=0}.
+	    % Such a behavior does not show up with SP: both constraints succeed as expected.
+	    % By analogy with the SP clp(q) code, I've changed the code to:
+	    setarg(3,Att,strictness(Strict))  
 	).
 udls(t_u(U),X,Lin,Bound,Sold) :-
 	Bound < U,	% smaller than upperbound: set new bound
