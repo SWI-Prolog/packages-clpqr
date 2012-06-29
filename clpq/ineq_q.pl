@@ -220,7 +220,7 @@ ineq_one_old_s_p_0([l(Y*Ky,_)|Tail],X,Ix) :-
 
 ineq_one_old_s_n_0([],_,Ix) :- Ix > 0. % X = I: Ix > 0
 ineq_one_old_s_n_0([l(Y*Ky,_)|Tail], X, Ix) :-
-	(   Tail = []	% X = K*Y + I 
+	(   Tail = []	% X = K*Y + I
 	->  Coeff is -Ky,
 	    Bound is Ix rdiv Coeff,
 	    update_indep(strict,Y,Coeff,Bound)
@@ -342,7 +342,7 @@ ineq_one_n_n_i(X,I) :-
 ineq_one_old_n_p_0([],_,Ix) :- Ix =< 0. % X =I
 ineq_one_old_n_p_0([l(Y*Ky,_)|Tail],X,Ix) :-
 	(   Tail = []	%  X = K*Y + I
-	->  Bound is -Ix rdiv Ky,	
+	->  Bound is -Ix rdiv Ky,
 	    update_indep(nonstrict,Y,Ky,Bound)
 	;   Tail = [_|_]
 	->  get_attr(X,itf,Att),
@@ -418,9 +418,9 @@ ineq_more([l(X*K,_)|Tail],Id,Lind,Strictness) :-
 	->  % X*K < Id or X*K =< Id
 	    % one var: update bound instead of slack introduction
 	    get_or_add_class(X,_),	% makes sure X belongs to a class
- 	    Bound is -Id rdiv K,	
- 	    update_indep(Strictness,X,K,Bound)	% new bound
-   	;   Tail = [_|_]
+	    Bound is -Id rdiv K,
+	    update_indep(Strictness,X,K,Bound)	% new bound
+	;   Tail = [_|_]
 	->  ineq_more(Strictness,Lind)
 	).
 
@@ -436,15 +436,15 @@ ineq_more(strict,Lind) :-
 	    get_attr(S,itf,AttS),
 	    arg(5,AttS,order(OrdS)),
 	    Ki is -1 rdiv K,
-	    add_linear_ff(Rest,Ki,[0,0,l(S*1,OrdS)],Ki,LinU),	% U = (-1/K)*Rest + (-1/K)*S 
+	    add_linear_ff(Rest,Ki,[0,0,l(S*1,OrdS)],Ki,LinU),	% U = (-1/K)*Rest + (-1/K)*S
 	    LinU = [_,_|Hu],
- 	    get_or_add_class(U,Class),
+	    get_or_add_class(U,Class),
 	    same_class(Hu,Class),	% put all variables of new lin. eq. of U in the same class
 	    get_attr(U,itf,AttU),
 	    arg(5,AttU,order(OrdU)),
 	    arg(6,AttU,class(ClassU)),
 	    backsubst(ClassU,OrdU,LinU)	% substitute U by new lin. eq. everywhere in the class
-	;   var_with_def_intern(t_u(0),S,Lind,1),	% Lind < 0 => Lind = S with S < 0	
+	;   var_with_def_intern(t_u(0),S,Lind,1),	% Lind < 0 => Lind = S with S < 0
 	    basis_add(S,_),			% adds S to the basis
 	    determine_active_dec(Lind),		% activate bounds
 	    reconsider(S)			% reconsider basis
@@ -476,7 +476,7 @@ ineq_more(nonstrict,Lind) :-
 % update_indep(Strictness,X,K,Bound)
 %
 % Updates the bound of independent variable X where X < Bound or X =< Bound
-% or X > Bound or X >= Bound, depending on Strictness and K. 
+% or X > Bound or X >= Bound, depending on Strictness and K.
 
 update_indep(strict,X,K,Bound) :-
 	get_attr(X,itf,Att),
@@ -557,8 +557,8 @@ udl(t_l(L),X,Lin,Bound,Sold) :-
 	    setarg(3,Att,strictness(Strict)),
 	    reconsider_lower(X,Lin,Bound)
 	;   true
-	).	
-		
+	).
+
 udl(t_u(U),X,Lin,Bound,_Sold) :-
 	(   Bound < U
 	->  get_attr(X,itf,Att),
@@ -566,7 +566,7 @@ udl(t_u(U),X,Lin,Bound,_Sold) :-
 	    reconsider_lower(X,Lin,Bound)	% makes sure that Lin still satisfies lowerbound Bound
 	;   Bound =:= U,
 	    solve_bound(Lin,Bound)	% new bound is equal to upperbound: solve
-	).	
+	).
 udl(t_lu(L,U),X,Lin,Bound,Sold) :-
 	(   Bound > L
 	->  (   Bound < U
@@ -581,7 +581,7 @@ udl(t_lu(L,U),X,Lin,Bound,Sold) :-
 	    )
 	;   true
 	).
-	
+
 % udls(Type,X,Lin,Bound,Strict)
 %
 % Updates lower bound of dependent variable X with linear equation
@@ -618,17 +618,7 @@ udls(t_l(L),X,Lin,Bound,Sold) :-
 	;   % equal to lowerbound: check strictness
 	    Strict is Sold \/ 2,
 	    get_attr(X,itf,Att),
-	    % Fred Mesnard: Previous SWI clp(q) code was:
-	    % arg(3,Att,strictness(Strict))    
-	    % but we had a bug. The following constraint fails while it shouldn't:
-	    % {X1-X2-X4+A=0,X5=B, -X1+X2-X3+B=0, X3+X4+X5+P1>=1, X3>=0, X4>=0, P1>=0, 
-	    %  Y3+Y4-Y6=A, Y1-Y2-Y4=0, -Y1+Y2-Y3=0, Y6>=0, Y6>0}.
-	    % Note that it succeeds when inverting the last two atomic constraints:
-	    % {X1-X2-X4+A=0,X5=B, -X1+X2-X3+B=0, X3+X4+X5+P1>=1, X3>=0, X4>=0, P1>=0, 
-	    %  Y3+Y4-Y6=A, Y1-Y2-Y4=0, -Y1+Y2-Y3=0, Y6>0, Y6>=0}.
-	    % Such a behavior does not show up with SP: both constraints succeed as expected.
-	    % By analogy with the SP clp(q) code, I've changed the code to:
-	    setarg(3,Att,strictness(Strict))  
+	    setarg(3,Att,strictness(Strict))
 	).
 udls(t_u(U),X,Lin,Bound,Sold) :-
 	Bound < U,	% smaller than upperbound: set new bound
@@ -766,7 +756,7 @@ udus(t_lu(L,U),X,Lin,Bound,Sold) :-
 	    get_attr(X,itf,Att),
 	    setarg(2,Att,type(t_lu(L,Bound))),
 	    setarg(3,Att,strictness(Strict)),
-	    reconsider_upper(X,Lin,Bound)		
+	    reconsider_upper(X,Lin,Bound)
 	;   % equal to upperbound: update strictness
 	    Strict is Sold \/ 1,
 	    get_attr(X,itf,Att),
@@ -789,11 +779,11 @@ uiu(t_u(U),X,_Lin,Bound,Sold) :-
 	;   Bound < U
 	->  % smaller than upperbound: update.
 	    Strict is Sold /\ 2,	% update strictness: strictness of lowerbound is kept,
-	    				% strictness of upperbound is set to non-strict
+					% strictness of upperbound is set to non-strict
 	    get_attr(X,itf,Att),
 	    setarg(2,Att,type(t_u(Bound))),
 	    setarg(3,Att,strictness(Strict))
-	;   true	% equal to upperbound and nonstrict: keep 
+	;   true	% equal to upperbound and nonstrict: keep
 	).
 uiu(t_l(L),X,Lin,Bound,_Sold) :-
 	(   Bound > L
@@ -1234,7 +1224,7 @@ uils(t_Lu(L,U),X,_Lin,Bound,Sold) :-
 % reconsider_upper(X,Lin,U)
 %
 % Checks if the upperbound of X which is U, satisfies the bounds
-% of the variables in Lin: let R be the sum of all the bounds on 
+% of the variables in Lin: let R be the sum of all the bounds on
 % the variables in Lin, and I be the inhomogene part of Lin, then
 % upperbound U should be larger than R + I (R may contain
 % lowerbounds).
@@ -1257,7 +1247,7 @@ reconsider_upper( _, _, _).
 % reconsider_lower(X,Lin,L)
 %
 % Checks if the lowerbound of X which is L, satisfies the bounds
-% of the variables in Lin: let R be the sum of all the bounds on 
+% of the variables in Lin: let R be the sum of all the bounds on
 % the variables in Lin, and I be the inhomogene part of Lin, then
 % lowerbound L should be smaller than R + I (R may contain
 % upperbounds).
