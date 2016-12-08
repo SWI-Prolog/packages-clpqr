@@ -1,7 +1,7 @@
-/* 
+/*
 
     Part of CLP(Q) (Constraint Logic Programming over Rationals)
-    
+
     Author:        Leslie De Koninck
     E-mail:        Leslie.DeKoninck@cs.kuleuven.be
     WWW:           http://www.swi-prolog.org
@@ -50,7 +50,7 @@
 	    clp_type/2,
 	    dump/3%, projecting_assert/1
 	]).
-
+:- license(gpl_swipl, 'CLP(Q)').
 :- expects_dialect(swi).
 
 %
@@ -95,7 +95,7 @@ user:portray_message(warning,import(_,_,clpq,private)).
 	prolog:message/3.
 
 % prolog:message(query(YesNo)) --> !,
-% 	['~@'-[chr:print_all_stores]],
+%	['~@'-[chr:print_all_stores]],
 %         '$messages':prolog_message(query(YesNo)).
 
 prolog:message(query(YesNo,Bindings)) --> !,
