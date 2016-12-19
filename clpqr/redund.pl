@@ -1,4 +1,4 @@
-/*  
+/*
 
     Part of CLP(Q,R) (Constraint Logic Programming over Rationals and Reals)
 
@@ -14,7 +14,7 @@
     This software is based on CLP(Q,R) by Christian Holzbaur for SICStus
     Prolog and distributed under the license details below with permission from
     all mentioned authors.
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
@@ -81,7 +81,7 @@ not_memq([Y|Ys],X) :-
 
 % redundancy_systems(Classes)
 %
-% Does redundancy removal via redundancy_vs/1 on all variables in the classes Classes. 
+% Does redundancy removal via redundancy_vs/1 on all variables in the classes Classes.
 
 redundancy_systems([]).
 redundancy_systems([S|Sys]) :-
@@ -109,7 +109,7 @@ redundancy_vars(Vs) :-
 %
 % Removes redundant bounds from the variables in Vs via redundant/3
 
-redundancy_vs(Vs) :- 
+redundancy_vs(Vs) :-
 	var(Vs),
 	!.
 redundancy_vs([]).
@@ -238,11 +238,11 @@ strictness_parts(Strict,Lower,Upper) :-
 % In other words: if adding the inverse of the lowerbound (X < L or X =< L)
 % does not result in a failure, this predicate fails.
 
-negate_l(0,CLP,L,X) :- 
+negate_l(0,CLP,L,X) :-
 	CLP:{L > X},
 	!,
 	fail.
-negate_l(1,CLP,L,X) :- 
+negate_l(1,CLP,L,X) :-
 	CLP:{L > X},
 	!,
 	fail.
@@ -266,15 +266,15 @@ negate_u(0,CLP,U,X) :-
 	CLP:{U < X},
 	!,
 	fail.
-negate_u(1,CLP,U,X) :- 
+negate_u(1,CLP,U,X) :-
 	CLP:{U =< X},
 	!,
 	fail.
-negate_u(2,CLP,U,X) :- 
+negate_u(2,CLP,U,X) :-
 	CLP:{U < X},
 	!,
 	fail.
-negate_u(3,CLP,U,X) :- 
+negate_u(3,CLP,U,X) :-
 	CLP:{U =< X},
 	!,
 	fail.

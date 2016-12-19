@@ -1,4 +1,4 @@
-/*  
+/*
 
     Part of CLP(Q) (Constraint Logic Programming over Rationals)
 
@@ -72,7 +72,7 @@ do_checks(Y,Ty,St,Li,Or,Cl,No,Later) :-
 
 numbers_only(Y) :-
 	(   var(Y)
-	;   rational(Y) 
+	;   rational(Y)
 	;   throw(type_error(_X = Y,2,'a rational number',Y))
 	),
 	!.

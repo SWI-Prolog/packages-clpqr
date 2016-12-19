@@ -1,4 +1,4 @@
-/* 
+/*
 
     Part of CLP(Q,R) (Constraint Logic Programming over Rationals and Reals)
 
@@ -176,7 +176,7 @@ nontarget([l(V*_,_)|Vs],Nt) :-
 %
 % Does drop_dep_one/1 on each variable in Vars.
 
-drop_dep(Vs) :- 
+drop_dep(Vs) :-
 	var(Vs),
 	!.
 drop_dep([]).
@@ -237,7 +237,7 @@ impose_ordering_sys([S|Ss]) :-
 	impose_ordering_sys(Ss).
 
 arrange([],_).
-arrange(Arr,S) :- 
+arrange(Arr,S) :-
 	Arr = [_|_],
 	class_allvars(S,All),
 	order(Arr,1,N),
@@ -245,7 +245,7 @@ arrange(Arr,S) :-
 	renorm_all(All),
 	arrange_pivot(All).
 
-order(Xs,N,M) :- 
+order(Xs,N,M) :-
 	var(Xs),
 	!,
 	N = M.
@@ -265,7 +265,7 @@ order([X|Xs],N,M) :-
 % Renormalizes all linear equations of the variables in difference list Vars to reflect
 % their new ordering.
 
-renorm_all(Xs) :- 
+renorm_all(Xs) :-
 	var(Xs),
 	!.
 renorm_all([X|Xs]) :-
@@ -283,7 +283,7 @@ renorm_all([X|Xs]) :-
 % If variable X of Vars has type t_none and has a higher order than the first element of
 % its linear equation, then it is pivoted with that element.
 
-arrange_pivot(Xs) :- 
+arrange_pivot(Xs) :-
 	var(Xs),
 	!.
 arrange_pivot([X|Xs]) :-

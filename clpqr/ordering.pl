@@ -37,7 +37,7 @@
     the GNU General Public License.
 */
 
- 
+
 :- module(ordering,
 	[
 	    combine/3,
@@ -126,7 +126,7 @@ combine(Ga,Gb,Gc) :-
 %
 % both Ga and Gb might have their internal ordering invalidated
 % because of bindings and aliasings
-% 
+%
 
 normalize([],[]) :- !.
 normalize(G,Gsgn) :-
@@ -146,7 +146,7 @@ normalize_vertices([X-Xnb|Xs],Res) :-
 % normalize_vertex(X,Nbs,X-Nbss)
 %
 % Normalizes a vertex X-Nbs into X-Nbss by sorting Nbs, removing duplicates (also of X)
-% and removing non-vars. 
+% and removing non-vars.
 
 normalize_vertex(X,Nbs,X-Nbsss) :-
 	var(X),

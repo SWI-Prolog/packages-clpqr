@@ -1,4 +1,4 @@
-/*  
+/*
 
     Part of CLP(R) (Constraint Logic Programming over Reals)
 

@@ -122,10 +122,10 @@ bb_loop(Opt,Is,Eps) :-
 % This new minimization is necessary as making a bound integer may yield a
 % different optimum. The added inequalities may also have led to binding.
 
-bb_reoptimize(Obj,Inf) :- 
+bb_reoptimize(Obj,Inf) :-
 	var(Obj),
 	iterate_dec(Obj,Inf).
-bb_reoptimize(Obj,Inf) :- 
+bb_reoptimize(Obj,Inf) :-
 	nonvar(Obj),
 	Inf = Obj.
 
@@ -156,7 +156,7 @@ vertex_value([X|Xs],[V|Vs]) :-
 %
 % Returns in <Value> the current value of variable <X>.
 
-rhs_value(Xn,Value) :- 
+rhs_value(Xn,Value) :-
 	(   nonvar(Xn)
 	->  Value = Xn
 	;   var(Xn)
@@ -210,10 +210,10 @@ bb_intern([X|Xs],[Xi|Xis],Eps) :-
 % then its bounds are hightened or lowered to the next integer.
 % Otherwise, it is checked it Term is integer.
 
-bb_intern([],X,_,_) :- 
+bb_intern([],X,_,_) :-
 	!,
 	X = 0.0.
-bb_intern([v(I,[])],X,_,Eps) :- 
+bb_intern([v(I,[])],X,_,Eps) :-
 	!,
 	X = I,
 	min(I-floor(I+1e-010),ceiling(I-1e-010)-I) - Eps < 1e-010.

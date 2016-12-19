@@ -10,7 +10,7 @@
 		   1992-1995, Austrian Research Institute for
 		              Artificial Intelligence (OFAI),
 			      Vienna, Austria
-			      
+			
     This software is based on CLP(Q,R) by Christian Holzbaur for SICStus
     Prolog and distributed under the license details below with permission from
     all mentioned authors.
@@ -81,7 +81,7 @@ fm_elim(Vs,Target,Pivots) :-
 
 % prefilter(Vars,Res)
 %
-% filters out target variables and variables that do not occur in bounded linear equations. 
+% filters out target variables and variables that do not occur in bounded linear equations.
 % Stores that the variables in Res are to be kept independent.
 
 prefilter([],[]).
@@ -89,7 +89,7 @@ prefilter([V|Vs],Res) :-
 	(   get_attr(V,itf,Att),
 	    arg(9,Att,n),
 	    occurs(V)
-	->  % V is a nontarget variable that occurs in a bounded linear equation 
+	->  % V is a nontarget variable that occurs in a bounded linear equation
 	    Res = [V|Tail],
 	    setarg(10,Att,keep_indep),
 	    prefilter(Vs,Tail)
@@ -196,7 +196,7 @@ reverse_pivot([I:D|Ps]) :-
 
 % unkeep(Pivots)
 %
-% 
+%
 
 unkeep([]).
 unkeep([_:D|Ps]) :-
@@ -217,7 +217,7 @@ fm_detach([V:_|Vs]) :-
 % activate_crossproduct(Lst)
 %
 % For each inequality Lin =< 0 (or Lin < 0) in Lst, a new variable is created:
-% Var = Lin and Var =< 0 (or Var < 0). Var is added to the basis. 
+% Var = Lin and Var =< 0 (or Var < 0). Var is added to the basis.
 
 activate_crossproduct([]).
 activate_crossproduct([lez(Strict,Lin)|News]) :-
@@ -240,7 +240,7 @@ crossproduct([A|As]) -->
 	crossproduct(As).
 
 % crossproduct(Next,First,Res,ResTail)
-% 
+%
 % Eliminates a variable in linear equations First + Next and stores the generated
 % inequalities in Res.
 % Let's say A:K1 = First and B:K2 = first equation in Next.
@@ -284,7 +284,7 @@ crossproduct([B:Kb|Bs],A:Ka) -->
 %
 % Generates a constraint following from the bounds of A and B.
 % When A = LinA and B = LinB then Lin = K*LinA + LinB. Ta is the type
-% of A and Tb is the type of B. Strict is the union of the strictness 
+% of A and Tb is the type of B. Strict is the union of the strictness
 % of A and B. If K is negative, then Ta should have been flipped (flip/2).
 % The idea is that if La =< A =< Ua and Lb =< B =< Ub (=< can also be <)
 % then if K is positive, K*La + Lb =< K*A + B =< K*Ua + Ub.
@@ -383,7 +383,7 @@ cp_card([A|As],Ci,Co) :-
 	cp_card(As,Cii,Co).
 
 % cp_card(Next,First,CountIn,CountOut)
-% 
+%
 % Counts the number of bounds that may generate an inequality in
 % crossproduct/4.
 
@@ -441,11 +441,11 @@ occurences(V,Occ) :-
 
 % occurences(De,OrdV,Occ)
 %
-% Returns in Occ the occurrences of variable V with order OrdV in the linear equations of 
+% Returns in Occ the occurrences of variable V with order OrdV in the linear equations of
 % dependent variables De with bound =\= t_none in the form of D:K where D is a dependent
 % variable and K is the scalar of V in the linear equation of D.
 
-occurences(De,_,[]) :- 
+occurences(De,_,[]) :-
 	var(De),
 	!.
 occurences([D|De],OrdV,Occ) :-
@@ -460,7 +460,7 @@ occurences([D|De],OrdV,Occ) :-
 	).
 
 % occ_type_filter(Type)
-% 
+%
 % Succeeds when Type is any other type than t_none. Is used in occurences/3 and occurs/2
 
 occ_type_filter(t_l(_)).
@@ -488,7 +488,7 @@ occurs(V) :-
 % Checks whether variable V with order OrdV occurs in a linear equation of any dependent variable
 % in De with a bound =\= t_none.
 
-occurs(De,_) :- 
+occurs(De,_) :-
 	var(De),
 	!,
 	fail.

@@ -64,8 +64,8 @@
 	      ]).
 	
 % called when two classes are unified: the allvars lists are appended to eachother, as well as the basis
-% lists. 
-% 
+% lists.
+%
 % note: La=[A,B,...,C|Lat], Lb=[D,E,...,F|Lbt], so new La = [A,B,...,C,D,E,...,F|Lbt]
 
 attr_unify_hook(class(CLP,La,Lat,ABasis,PrioA),Y) :-
@@ -82,13 +82,13 @@ class_new(Class,CLP,All,AllT,Basis) :-
 	put_attr(Su,class,class(CLP,All,AllT,Basis,[])),
 	Su = Class.
 
-class_get_prio(Class,Priority) :- 
+class_get_prio(Class,Priority) :-
 	get_attr(Class,class,class(_,_,_,_,Priority)).
 
 class_get_clp(Class,CLP) :-
 	get_attr(Class,class,class(CLP,_,_,_,_)).
 
-class_put_prio(Class,Priority) :- 
+class_put_prio(Class,Priority) :-
 	get_attr(Class,class,class(CLP,All,AllT,Basis,_)),
 	put_attr(Class,class,class(CLP,All,AllT,Basis,Priority)).
 

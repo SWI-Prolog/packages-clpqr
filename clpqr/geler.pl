@@ -87,7 +87,7 @@ attr_unify_hook(g(CLP,goals(Gx),_),Y) :-
 		    ;   put_attr(Y,geler,g(CLP,n,C))
 		    )
 		;   % no goals in Y, so no mutual goals of X and Y, store
-		    % goals of X in Y 
+		    % goals of X in Y
 		    % no need to run any goal.
 		    Later = [],
 		    put_attr(Y,geler,g(CLP,goals(Gx),C))

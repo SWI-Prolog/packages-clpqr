@@ -14,7 +14,7 @@
     This software is based on CLP(Q,R) by Christian Holzbaur for SICStus
     Prolog and distributed under the license details below with permission from
     all mentioned authors.
-    
+
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
     as published by the Free Software Foundation; either version 2
@@ -115,10 +115,10 @@ bb_loop(Opt,Is) :-
 % This new minimization is necessary as making a bound integer may yield a
 % different optimum. The added inequalities may also have led to binding.
 
-bb_reoptimize(Obj,Inf) :- 
+bb_reoptimize(Obj,Inf) :-
 	var(Obj),
 	iterate_dec(Obj,Inf).
-bb_reoptimize(Obj,Inf) :- 
+bb_reoptimize(Obj,Inf) :-
 	nonvar(Obj),
 	Inf = Obj.
 
@@ -150,7 +150,7 @@ vertex_value([X|Xs],[V|Vs]) :-
 %
 % Returns in <Value> the current value of variable <X>.
 
-rhs_value(Xn,Value) :- 
+rhs_value(Xn,Value) :-
 	(   nonvar(Xn)
 	->  Value = Xn
 	;   var(Xn)
@@ -168,7 +168,7 @@ rhs_value(Xn,Value) :-
 
 bb_first_nonint([I|Is],[Rhs|Rhss],Viol,F,C) :-
 	(   integer(Rhs)
-	->  bb_first_nonint(Is,Rhss,Viol,F,C)    
+	->  bb_first_nonint(Is,Rhss,Viol,F,C)
 	;   Viol = I,
 	    F is floor(Rhs),
 	    C is ceiling(Rhs)
@@ -193,10 +193,10 @@ bb_intern([X|Xs],[Xi|Xis]) :-
 % then its bounds are hightened or lowered to the next integer.
 % Otherwise, it is checked it Term is integer.
 
-bb_intern([],X,_) :- 
+bb_intern([],X,_) :-
 	!,
 	X = 0.
-bb_intern([v(I,[])],X,_) :- 
+bb_intern([v(I,[])],X,_) :-
 	!,
 	integer(I),
 	X = I.

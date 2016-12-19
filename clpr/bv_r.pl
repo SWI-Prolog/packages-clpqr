@@ -587,7 +587,7 @@ dec_step([l(V*K,OrdV)|Vs],Status) :-
 	(   dec_step_2(W,l(V*K,OrdV),Class,Status)
 	->  true
 	;   dec_step(Vs,Status)
-	).   
+	).
 
 dec_step_2(t_U(U),l(V*K,OrdV),Class,Status) :-
 	K > 1.0e-10,
@@ -718,7 +718,7 @@ ub([Dep|Deps],OrdX,T0,T1) :-
 % See lb_inner/5: this is similar
 
 ub_inner(t_l(L),OrdX,Lin,t_L(L),Ub) :-
-	nf_rhs_x(Lin,OrdX,Rhs,K), 
+	nf_rhs_x(Lin,OrdX,Rhs,K),
 	% Rhs is right hand side of lin. eq. Lin containing term X*K
 	K < -1.0e-10,	% K < 0
 	Ub is (L-Rhs)/K.
@@ -1250,7 +1250,7 @@ basis_drop(X) :-
 	class_basis_drop(Cv,X).
 
 % basis(X,Basis)
-% 
+%
 % Basis is the basis of the class to which X belongs.
 
 basis(X,Basis) :-
@@ -1282,7 +1282,7 @@ basis_pivot(Leave,Enter) :-
 
 % pivot(Dep,Indep)
 %
-% The linear equation of variable Dep, is transformed into one of variable 
+% The linear equation of variable Dep, is transformed into one of variable
 % Indep, containing Dep. Then, all occurrences of Indep in linear equations are
 % substituted by this new definition
 
@@ -1443,7 +1443,7 @@ bs([X|Xs],OrdV,Lin) :-
 %
 % E.g. when V = 2X + 3Y + 4, X = 3V + 2Z and Y = 4X + 3
 % we can substitute V in the linear equation of X: X = 6X + 9Y + 2Z + 12
-% we can't substitute V in the linear equation of Y of course. 
+% we can't substitute V in the linear equation of Y of course.
 
 bs_collect_bindings(Xs,_,_,Bind0,BindT) :-
 	var(Xs),
@@ -1684,7 +1684,7 @@ narrow_l( t_lu(_,U), X, L) :-
 % Returns in Dump a representation of the linear constraint on variable
 % Var which has linear equation H + I and has type Type.
 
-dump_var(t_none,V,I,H) --> 
+dump_var(t_none,V,I,H) -->
 	!,
 	(   {
 		H = [l(W*K,_)],

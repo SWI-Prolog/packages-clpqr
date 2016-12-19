@@ -99,7 +99,7 @@ renormalize_log(N,L0,L2,Lin) :-
 
 % renormalize_log_one(X,Term,Res)
 %
-% Renormalizes a term in X: if X is a nonvar, the term becomes a scalar. 
+% Renormalizes a term in X: if X is a nonvar, the term becomes a scalar.
 
 renormalize_log_one(X,Term,Res) :-
 	var(X),
@@ -249,7 +249,7 @@ add_linear_11h([l(Y*Ky,OrdY)|Ys],X,Kx,OrdX,Xs,Zs) :-
 
 % mult_linear_factor(Lin,K,Res)
 %
-% Linear expression Res is the result of multiplication of linear 
+% Linear expression Res is the result of multiplication of linear
 % expression Lin by scalar K
 
 mult_linear_factor(Lin,K,Mult) :-
@@ -377,8 +377,8 @@ nf2sum([X|Xs],I,Sum) :-
 	;   hom2sum([X|Xs],I,Sum)
  	).
 
-% hom2sum(Hom,Sofar,Term) 
-% 
+% hom2sum(Hom,Sofar,Term)
+%
 % Transforms a linear expression into a sum
 % this predicate handles all but the first term
 % (the first term does not need a concatenation symbol + or -)
