@@ -91,7 +91,7 @@ uninstall:
 		rm -rf $(CLPQRDIR)
 
 check::
-#		$(PL) -q -f clpr_test.pl -g test,halt -t 'halt(1)'
+#		$(PL) -q -f clpr_test.pl -g test -t halt
 
 
 doc:		html pdf
