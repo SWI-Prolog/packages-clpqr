@@ -94,14 +94,9 @@ user:portray_message(warning,import(_,_,clpq,private)).
 :- multifile
 	prolog:message/3.
 
-% prolog:message(query(YesNo)) --> !,
-%	['~@'-[chr:print_all_stores]],
-%         '$messages':prolog_message(query(YesNo)).
-
 prolog:message(query(YesNo,Bindings)) --> !,
 	{dump_toplevel_bindings(Bindings,Constraints)},
-	{dump_format(Constraints,Format)},
-	Format,
+	dump_format(Constraints),
         '$messages':prolog_message(query(YesNo,Bindings)).
 
 dump_toplevel_bindings(Bindings,Constraints) :-
@@ -124,9 +119,10 @@ dump_vars_names([Name=Term|Rest],Seen,Vars,Names) :-
 	),
 	dump_vars_names(Rest,NSeen,RVars,RNames).
 
-dump_format([],[]).
-dump_format([X|Xs],['{~w}'-[X],nl|Rest]) :-
-	dump_format(Xs,Rest).
+dump_format([]) --> [].
+dump_format([X|Xs]) -->
+	['{~w}'-[X], nl],
+	dump_format(Xs).
 
 memberchk_eq(X,[Y|Ys]) :-
 	(   X == Y
