@@ -72,7 +72,7 @@ dump_linear(V) -->
 	->  []
 	;   dump_v(CLP,t_none,V,I,H)
 	),
-  	(   {
+	(   {
 		Type=t_none,
 		arg(9,Att,n) % attribute should not have changed by dump_v...
 	    }
@@ -122,3 +122,11 @@ do_checks(clpq,Y,Ty,St,Li,Or,Cl,No,Later) :-
 	itf_q:do_checks(Y,Ty,St,Li,Or,Cl,No,Later).
 do_checks(clpr,Y,Ty,St,Li,Or,Cl,No,Later) :-
 	itf_r:do_checks(Y,Ty,St,Li,Or,Cl,No,Later).
+
+		 /*******************************
+		 *	       SANDBOX		*
+		 *******************************/
+:- multifile
+	sandbox:safe_primitive/1.
+
+sandbox:safe_primitive(itf:clp_type(_,_)).

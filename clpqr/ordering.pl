@@ -196,3 +196,12 @@ group([L-Ll|Ls],K,Kl,Res) :-
 	;   Res = [K-Kl|Tail],
 	    group(Ls,L,Ll,Tail)
 	).
+
+
+		 /*******************************
+		 *	       SANDBOX		*
+		 *******************************/
+:- multifile
+	sandbox:safe_primitive/1.
+
+sandbox:safe_primitive(ordering:ordering(_)).

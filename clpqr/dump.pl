@@ -332,3 +332,11 @@ list_to_conj([], true) :- !.
 list_to_conj([X], X) :- !.
 list_to_conj([H|T0], (H,T)) :-
 	list_to_conj(T0, T).
+
+		 /*******************************
+		 *	       SANDBOX		*
+		 *******************************/
+:- multifile
+	sandbox:safe_primitive/1.
+
+sandbox:safe_primitive(dump:dump(_,_,_)).

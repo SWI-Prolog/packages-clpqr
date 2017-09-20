@@ -433,7 +433,7 @@ iterate_dec(OptVar,Opt) :-
 	->  iterate_dec(OptVar,Opt)
 	;   Status = optimum,
 	    Opt is R + I
- 	).
+	).
 
 % iterate_inc(OptVar,Opt)
 %
@@ -596,7 +596,7 @@ dec_step_2(t_Lu(L,U),l(V*K,OrdV),Class,applied) :-
 	class_basis(Class,Deps),
 	ub(Deps,OrdV,V-t_lU(L,U)-Init,Vub-Vb-_),
 	pivot_b(Vub,V,Vb,t_lu(L,U)).
-dec_step_2(t_none,l(V*_,_),_,unlimited(V,t_none)).	
+dec_step_2(t_none,l(V*_,_),_,unlimited(V,t_none)).
 
 inc_step([],optimum).	% if status has not been set yet: no changes
 inc_step([l(V*K,OrdV)|Vs],Status) :-
@@ -701,7 +701,7 @@ ub_inner(t_l(L),OrdX,Lin,t_L(L),Ub) :-
 	Ub is (L - Rhs) rdiv K.
 ub_inner(t_u(U),OrdX,Lin,t_U(U),Ub) :-
 	nf_rhs_x(Lin,OrdX,Rhs,K),
- 	K > 0,
+	K > 0,
 	Ub is (U - Rhs) rdiv K.
 ub_inner(t_lu(L,U),OrdX,Lin,W,Ub) :-
 	nf_rhs_x(Lin,OrdX,Rhs,K),
@@ -830,10 +830,10 @@ solve(H,Lin,_,Bind0,BindT) :-
 	;   Category = 2 % class variable, no bounds
 	->  arg(6,Att,class(NewC)),
 	    class_allvars(NewC,Deps),
- 	    (   ClassesUniq = [_] % rank increasing
+	    (   ClassesUniq = [_] % rank increasing
 	    ->	bs_collect_bindings(Deps,Ord,Lin1,Bind0,BindT)
 	    ;   Bind0 = BindT,
-	    	bs(Deps,Ord,Lin1)
+		bs(Deps,Ord,Lin1)
 	    ),
 	    eq_classes(NV,NVT,ClassesUniq)
 	;   Category = 3 % classless variable, all variables in Lin and
@@ -892,7 +892,7 @@ solve_x(H,Lin,_,X,Bind0,BindT) :-
 	(   arg(6,Att,class(NewC))
 	->  class_allvars(NewC,Deps),
 	    (   ClassesUniq = [_] % rank increasing
-	    -> 	bs_collect_bindings(Deps,OrdX,Lin1,Bind0,BindT)
+	    ->	bs_collect_bindings(Deps,OrdX,Lin1,Bind0,BindT)
 	    ;   Bind0 = BindT,
 		bs(Deps,OrdX,Lin1)
 	    ),
@@ -949,7 +949,7 @@ sd([l(X*K,_)|Xs],Class0,ClassN,Preference0,PreferenceN,NV0,NVt) :-
 	    ;   preference(Preference0,4-X-K,Preference1)
 		    % has class, is bounded => category 4
 	    )
-  	;   % new: has no class
+	;   % new: has no class
 	    Class1 = Class0,
 	    NV0 = [X|NV1], % X has no class yet, add to list of new variables
 	    (   arg(2,Att,type(t_none))
@@ -958,7 +958,7 @@ sd([l(X*K,_)|Xs],Class0,ClassN,Preference0,PreferenceN,NV0,NVt) :-
 	    ;   preference(Preference0,3-X-K,Preference1)
 		    % no class, is bounded => category 3
 	    )
-  	),
+	),
 	sd(Xs,Class1,ClassN,Preference1,PreferenceN,NV1,NVt).
 
 %
@@ -969,7 +969,7 @@ preference(A,B,Pref) :-
 	B = Py-_-_,
 	(   Px < Py
 	->  Pref = A
-  	;   Pref = B
+	;   Pref = B
 	).
 
 % eq_classes(NV,NVTail,Cs)
@@ -1150,7 +1150,7 @@ determine_active_inc([_,_|H]) :-
 determine_active([],_).
 determine_active([l(X*K,_)|Xs],S) :-
 	get_attr(X,itf,Att),
-	arg(2,Att,type(Type)),	
+	arg(2,Att,type(Type)),
 	determine_active(Type,X,K,S),
 	determine_active(Xs,S).
 
@@ -1163,7 +1163,7 @@ determine_active(t_u(U),X,_,_) :- intro_at(X,U,t_U(U)).
 determine_active(t_lu(L,U),X,K,S) :-
 	KS is K*S,
 	(   KS < 0
-	->  intro_at(X,L,t_Lu(L,U))	
+	->  intro_at(X,L,t_Lu(L,U))
 	;   KS > 0
 	->  intro_at(X,U,t_lU(L,U))
 	).
@@ -1461,7 +1461,7 @@ rcbl([X|Continuation],Bind0,BindT) :-
 	->  rcbl_status(Status,X,NewContinuation,Bind0,BindT,Violated)
 	;   rcbl(Continuation,Bind0,BindT)
 	).
-	
+
 rcb_cont(X,Status,Violated,ContIn,ContOut) :-
 	get_attr(X,itf,Att),
 	arg(2,Att,type(Type)),
@@ -1758,3 +1758,16 @@ dump_nz(_,H,I) -->
 	    nf2sum(H1,0,Sum)
 	},
 	[Sum =\= I1].
+
+		 /*******************************
+		 *	       SANDBOX		*
+		 *******************************/
+:- multifile
+	sandbox:safe_primitive/1.
+
+sandbox:safe_primitive(bv_q:inf(_,_)).
+sandbox:safe_primitive(bv_q:inf(_,_,_,_)).
+sandbox:safe_primitive(bv_q:sup(_,_)).
+sandbox:safe_primitive(bv_q:sup(_,_,_,_)).
+sandbox:safe_primitive(bv_q:maximize(_)).
+sandbox:safe_primitive(bv_q:minimize(_)).
