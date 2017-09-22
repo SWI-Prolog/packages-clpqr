@@ -74,6 +74,7 @@
 	    add_linear_11/3,
 	    normalize_scalar/2
 	]).
+:- use_module('../clpqr/highlight', []).
 
 goal_expansion(geler(X,Y),geler(clpq,X,Y)).
 
@@ -1126,53 +1127,3 @@ transg(wait_linear_retry(Nf,Res,Goal)) -->
 
 sandbox:safe_primitive(nf_q:{_}).
 sandbox:safe_primitive(nf_q:entailed(_)).
-
-		 /*******************************
-		 *	     HIGHLIGHT		*
-		 *******************************/
-
-:- multifile
-	prolog_colour:goal_colours/3,
-	prolog_colour:syntax_message//1.
-
-prolog_colour:goal_colours({Constraints}, imported(File), Colours) :-
-	clpqr_module(Module),
-	module_property(Module, file(File)), !,
-	Colours = goal(imported(File)) - ConstraintColours,
-	constraint_colours(Constraints,	Module, ConstraintColours).
-
-clpqr_module(clpq).
-clpqr_module(clpr).
-
-constraint_colours(Var, _, classify) :-
-	var(Var), !.
-constraint_colours((R1,R2), M, classify-[C1,C2]) :- !,
-	constraint_colours(R1, M, C1),
-	constraint_colours(R2, M, C2).
-constraint_colours((R1;R2), M, classify-[C1,C2]) :- !,
-	constraint_colours(R1, M, C1),
-	constraint_colours(R2, M, C2).
-constraint_colours(Term,   M, constraint(M)-[classify,classify]) :-
-	clpqr_constraint(Term), !.
-constraint_colours(_, M, type_error(Type)) :-
-	constraint_type(M, Type).
-
-constraint_type(clpq, clpq_constraint).
-constraint_type(clpr, clpr_constraint).
-
-clpqr_constraint(_ > _).
-clpqr_constraint(_ >= _).
-clpqr_constraint(_ < _).
-clpqr_constraint(_ =< _).
-clpqr_constraint(_ =:=_).
-clpqr_constraint(_ =\= _).
-clpqr_constraint(_ = _).
-
-prolog_colour:syntax_message(constraint(clpq)) -->
-	[ 'clp(Q) constraint'-[] ].
-prolog_colour:syntax_message(constraint(clpr)) -->
-	[ 'clp(R) constraint'-[] ].
-prolog_colour:syntax_message(type_error(constraint(clpq))) -->
-	[ 'Only clp(Q) constraints may appear inside {}'-[] ].
-prolog_colour:syntax_message(type_error(constraint(clpq))) -->
-	[ 'Only clp(R) constraints may appear inside {}'-[] ].

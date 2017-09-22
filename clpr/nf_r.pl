@@ -77,6 +77,7 @@
 	    add_linear_11/3,
 	    normalize_scalar/2
 	]).
+:- use_module('../clpqr/highlight', []).
 
 goal_expansion(geler(X,Y),geler(clpr,X,Y)).
 

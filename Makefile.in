@@ -53,7 +53,8 @@ CLPQPRIV=	bb_q.pl bv_q.pl \
 CLPQRPRIV=	class.pl dump.pl \
 		geler.pl itf.pl \
 		ordering.pl \
-		project.pl redund.pl
+		project.pl redund.pl \
+		highlight.pl
 LIBPL=		$(srcdir)/clpr.pl $(srcdir)/clpq.pl
 EXAMPLES=
 
