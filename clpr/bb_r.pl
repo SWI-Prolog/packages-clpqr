@@ -40,7 +40,7 @@
 
 :- module(bb_r,
 	[
-	    bb_inf/3,	
+	    bb_inf/3,
 	    bb_inf/5,
 	    vertex_value/2
 	]).
@@ -61,9 +61,9 @@
 	    nf/2,
 	    nf_constant/2,
 	    repair/2,
-	    wait_linear/3		
+	    wait_linear/3
 	]).
-		
+
 % bb_inf(Ints,Term,Inf)
 %
 % Finds the infimum of Term where the variables Ints are to be integers.
@@ -258,3 +258,12 @@ bb_narrow_upper(X) :-
 	    )
 	;   true
 	).
+
+		 /*******************************
+		 *	       SANDBOX		*
+		 *******************************/
+:- multifile
+	sandbox:safe_primitive/1.
+
+sandbox:safe_primitive(bb_r:bb_inf(_,_,_)).
+sandbox:safe_primitive(bb_r:bb_inf(_,_,_,_,_)).
