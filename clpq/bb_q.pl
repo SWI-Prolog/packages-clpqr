@@ -91,7 +91,7 @@ bb_inf_internal(Is,Lin,_,_) :-
 	bb_loop(Dep,IsNf),
 	fail.
 bb_inf_internal(_,_,Inf,Vertex) :-
-	catch(nb_getval(prov_opt,InfVal-Vertex),_,fail),
+	nb_current(prov_opt,InfVal-Vertex),
 	{Inf =:= InfVal},
 	nb_delete(prov_opt).
 
@@ -127,7 +127,9 @@ bb_reoptimize(Obj,Inf) :-
 % Checks if the new infimum Inf is better than the previous one (if such exists).
 
 bb_better_bound(Inf) :-
-	catch((nb_getval(prov_opt,Inc-_),Inf < Inc),_,true).
+	nb_current(prov_opt,Inc-_), !,
+	Inf < Inc.
+bb_better_bound(_).
 
 % bb_branch(V,U,L)
 %

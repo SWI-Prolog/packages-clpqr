@@ -383,7 +383,7 @@ inf_lin(Lin,_,Vector,_) :-
 	nb_setval(inf,[Inf|Values]),
 	fail.
 inf_lin(_,Infimum,_,Vertex) :-
-	catch(nb_getval(inf,L),_,fail),
+	nb_current(inf,L),
 	nb_delete(inf),
 	assign([Infimum|Vertex],L).
 
