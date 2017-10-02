@@ -1,6 +1,4 @@
-/*  $Id$
-
-    Part of CLP(Q) (Constraint Logic Programming over Rationals)
+/*  Part of CLP(Q) (Constraint Logic Programming over Rationals)
 
     Author:        Leslie De Koninck
     E-mail:        Leslie.DeKoninck@cs.kuleuven.be
@@ -43,6 +41,8 @@
 	    project_nonlin/3,
 	    collect_nonlin/3
 	]).
+:- meta_predicate
+	geler(+,?,0).
 
 % l2conj(List,Conj)
 %
@@ -188,5 +188,5 @@ attach([V|Vs],CLP,Goal) :-
 	        )
 	    )
 	;   put_attr(V,geler,g(CLP,goals(Goal),n))
-	),	
+	),
 	attach(Vs,CLP,Goal).
