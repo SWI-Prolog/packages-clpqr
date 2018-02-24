@@ -25,11 +25,11 @@ CLPDIR=$(SHAREDIR)
 EXDIR=$(CLPQRDIR)/clpqr/examples
 else
 XPCEBASE=$(PLBASE)/xpce
-PKGDOC=$(PLBASE)/doc/packages
+PKGDOCDIR=$(PLBASE)/doc/packages
 PCEHOME=../../xpce
 LIBDIR=$(PLBASE)/library
 CLPDIR=$(LIBDIR)/clp
-EXDIR=$(PKGDOC)/examples/clpqr
+EXDIR=$(PKGDOCDIR)/examples/clpqr
 endif	#YAP/SWI
 
 CLPRDIR=$(CLPDIR)/clpr
