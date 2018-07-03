@@ -582,7 +582,6 @@ nf(Term,_) :-
 % If N is a number, N is normalized
 
 nf_number(N,Res) :-
-	rational(N),
 	Rat is rationalize(N),
 	(   Rat =:= 0
 	->  Res = []
@@ -968,8 +967,12 @@ repair_p(Term,P,[],L0,L1) :-
 % digested -> cuts after repair of args!
 %
 repair_p_one(Term,TermN) :-
-	nf_number(Term,TermN),	% freq. shortcut for nf/2 case below
-	!.
+	(   number(Term)
+	->  true
+	;   rational(Term)
+	),
+	!,
+        nf_number(Term,TermN).	% freq. shortcut for nf/2 case below
 repair_p_one(A1/A2,TermN) :-
 	repair(A1,A1n),
 	repair(A2,A2n),
