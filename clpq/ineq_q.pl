@@ -1086,7 +1086,7 @@ uil(t_Lu(L,U),X,Lin,Bound,Sold) :-
 		    ub(ClassX,OrdX,Vub-Vb-Ub),
 		    Bound >= Ub + L
 		->  get_attr(X,itf,Att2), % changed?
-		    setarg(2,Att2,t_Lu(Bound,U)),
+		    setarg(2,Att2,type(t_Lu(Bound,U))),
 		    setarg(3,Att2,strictness(Strict)),
 		    pivot_a(Vub,X,Vb,t_lu(Bound,U)),
 		    reconsider(X)
