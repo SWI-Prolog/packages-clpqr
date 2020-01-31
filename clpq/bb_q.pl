@@ -82,12 +82,13 @@ bb_inf(Is,Term,Inf,Vertex) :-
 % all variables in <Is> are to be integers.
 
 bb_inf_internal(Is,Lin,_,_) :-
+	bb_intern(Is,IsNf),
 	nb_delete(prov_opt),
 	repair(Lin,LinR),	% bb_narrow ...
 	deref(LinR,Lind),
 	var_with_def_assign(Dep,Lind),
 	determine_active_dec(Lind),
-	bb_loop(Dep,Is),
+	bb_loop(Dep,IsNf),
 	fail.
 bb_inf_internal(_,_,Inf,Vertex) :-
 	nb_current(prov_opt,InfVal-Vertex),
