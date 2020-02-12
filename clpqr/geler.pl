@@ -36,13 +36,14 @@
 */
 
 :- module(geler,
-	[
-	    geler/3,
+	  [ geler/3,
 	    project_nonlin/3,
 	    collect_nonlin/3
-	]).
+	  ]).
 :- meta_predicate
 	geler(+,?,0).
+
+:- use_module(library(apply), [maplist/2]).
 
 % l2conj(List,Conj)
 %

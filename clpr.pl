@@ -54,6 +54,7 @@
 	    dump/3%, projecting_assert/1
 	]).
 :- license(gpl_swipl, 'CLP(R)').
+:- use_module(library(dialect)).
 :- expects_dialect(swi).
 
 %
@@ -67,28 +68,22 @@
 %
 user:portray_message(warning,import(_,_,clpr,private)).
 
-:- load_files(
-	[
-	    'clpr/bb_r',
-	    'clpr/bv_r',
-	    'clpr/fourmotz_r',
-	    'clpr/ineq_r',
-	    'clpr/itf_r',
-	    'clpr/nf_r',
-	    'clpr/store_r',
-	    'clpqr/class',
-	    'clpqr/dump',
-	    'clpqr/geler',
-	    'clpqr/itf',
-	    'clpqr/ordering',
-	    'clpqr/project',
-	    'clpqr/redund',
-	    library(ugraphs)
-	],
-	[
-	    if(not_loaded),
-	    silent(true)
-	]).
+:- use_module(clpr/bb_r).
+:- use_module(clpr/bv_r).
+:- use_module(clpr/fourmotz_r).
+:- use_module(clpr/ineq_r).
+:- use_module(clpr/itf_r).
+:- use_module(clpr/nf_r).
+:- use_module(clpr/store_r).
+:- use_module(clpqr/class).
+:- use_module(clpqr/dump).
+:- use_module(clpqr/geler).
+:- use_module(clpqr/itf).
+:- use_module(clpqr/ordering).
+:- use_module(clpqr/project).
+:- use_module(clpqr/redund).
+:- use_module(library(ugraphs)).
+
 
 		 /*******************************
 		 *	 TOPLEVEL PRINTING	*

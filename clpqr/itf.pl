@@ -47,7 +47,7 @@
 	    dump_nonzero/3,
 	    clp_type/2
 	]).
-
+:- use_module(library(apply), [maplist/2]).
 
 clp_type(Var,Type) :-
 	(   get_attr(Var,itf,Att)

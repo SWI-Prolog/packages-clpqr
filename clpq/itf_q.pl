@@ -41,6 +41,7 @@
 	[
 	    do_checks/8
 	]).
+:- use_module(library(apply), [maplist/2]).
 :- use_module(bv_q,
 	[
 	    deref/2,
