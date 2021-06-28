@@ -41,7 +41,7 @@
 % Answer constraint projection
 %
 
-%:- public project_attributes/2. 		% xref.pl
+%:- public project_attributes/2.		% xref.pl
 
 :- module(project,
 	[
@@ -83,7 +83,7 @@ project_attributes(TargetVars,Cvas) :-
 	    (   Tvs == []
 	    ->  drop_lin_atts(Avs)
 	    ;   redundancy_vars(Avs),		% removes redundant bounds (redund.pl)
-		make_target_indep(Tvs,Pivots),	% pivot partners are marked to be kept during elim.	
+		make_target_indep(Tvs,Pivots),	% pivot partners are marked to be kept during elim.
 		mark_target(NlReachable),	% after make_indep to express priority
 		drop_dep(Avs),
 		fm_elim(CLP,Avs,Tvs,Pivots),
@@ -114,19 +114,7 @@ mark_target([V|Vs]) :-
 	;   true
 	),
 	mark_target(Vs).
-	
 
-% mark_keep(Vars)
-%
-% Mark the variables in Vars to be kept during elimination.
-
-mark_keep([]).
-mark_keep([V|Vs]) :-
-	get_attr(V,itf,Att),
-	setarg(11,Att,keep),
-	mark_keep(Vs).
-
-%
 % Collect the pivots in reverse order
 % We have to protect the target variables pivot partners
 % from redundancy eliminations triggered by fm_elim,
