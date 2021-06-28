@@ -64,6 +64,7 @@
 	[
 	    class_drop/2
 	]).
+:- use_module(library(error), [type_error/2]).
 
 do_checks(Y,Ty,St,Li,Or,Cl,No,Later) :-
 	numbers_only(Y),
@@ -74,11 +75,13 @@ do_checks(Y,Ty,St,Li,Or,Cl,No,Later) :-
 
 numbers_only(Y) :-
 	(   var(Y)
+	->  true
 	;   integer(Y)
+	->  true
 	;   float(Y)
-	;   throw(type_error(_X = Y,2,'a real number',Y))
-	),
-	!.
+	->  true
+	;   type_error(real, Y)
+	).
 
 % verify_nonzero(Nonzero,Y)
 %
