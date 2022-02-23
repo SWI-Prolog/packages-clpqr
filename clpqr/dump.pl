@@ -80,9 +80,12 @@ projecting_assert(Clause) :-	% not our business
 	assert(Clause).
 
 copy_term_clpq(Term,Copy,Constraints) :-
-	findall(NV/Cs,
-		copy_term_clpq_(Term, NV, Cs),
-		[Copy/Constraints]).
+	State = state(-),
+	(   copy_term_clpq_(Term, NV, Cs),
+	    nb_setarg(1, State, NV/Cs),
+	    fail
+	;   arg(1, State, Copy/Constraints)
+	).
 
 copy_term_clpq_(Term, Copy, Constraints) :-
 	term_variables(Term,Target),		 % get all variables in Term
