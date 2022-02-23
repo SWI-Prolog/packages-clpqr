@@ -36,7 +36,7 @@
 */
 
 
-:- module(dump,
+:- module(clpqr_dump,
 	  [ dump/3,
 	    projecting_assert/1
 	  ]).
@@ -128,7 +128,7 @@ related_linear_vars(Vs,All) :-
 
 related_linear_sys([],S0,L0) :- assoc_to_list(S0,L0).
 related_linear_sys([V|Vs],S0,S2) :-
-	(   get_attr(V,itf,Att),
+	(   get_attr(V,clpqr_itf,Att),
 	    arg(6,Att,class(C))
 	->  put_assoc(C,S0,C,S1)
 	;   S1 = S0
@@ -197,7 +197,7 @@ all_attribute_goals([V|Vs]) -->
 %	copy_term/3, which also determines  the   toplevel  printing  of
 %	residual constraints.
 
-itf:attribute_goals(V) -->
+clpqr_itf:attribute_goals(V) -->
 	(   { term_attvars(V, Vs),
 	      dump(Vs, NVs, List),
 	      List \== [],
@@ -211,11 +211,11 @@ itf:attribute_goals(V) -->
 
 class:attribute_goals(_) --> [].
 
-geler:attribute_goals(V) --> itf:attribute_goals(V).
+geler:attribute_goals(V) --> clpqr_itf:attribute_goals(V).
 
 del_itf([]).
 del_itf([H|T]) :-
-	del_attr(H, itf),
+	del_attr(H, clpqr_itf),
 	del_itf(T).
 
 
