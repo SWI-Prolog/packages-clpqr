@@ -230,4 +230,4 @@ list_to_conj([H|T0], (H,T)) :-
 :- multifile
 	sandbox:safe_primitive/1.
 
-sandbox:safe_primitive(dump:dump(_,_,_)).
+sandbox:safe_primitive(clpqr_dump:dump(_,_,_)).

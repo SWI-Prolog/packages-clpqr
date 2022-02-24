@@ -200,4 +200,4 @@ group([L-Ll|Ls],K,Kl,Res) :-
 :- multifile
 	sandbox:safe_primitive/1.
 
-sandbox:safe_primitive(ordering:ordering(_)).
+sandbox:safe_primitive(clpqr_ordering:ordering(_)).
