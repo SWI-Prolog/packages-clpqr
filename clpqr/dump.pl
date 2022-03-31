@@ -209,9 +209,9 @@ clpqr_itf:attribute_goals(V) -->
 	;   []
 	).
 
-class:attribute_goals(_) --> [].
+clpqr_class:attribute_goals(_) --> [].
 
-geler:attribute_goals(V) --> clpqr_itf:attribute_goals(V).
+clpqr_geler:attribute_goals(V) --> clpqr_itf:attribute_goals(V).
 
 del_itf([]).
 del_itf([H|T]) :-
