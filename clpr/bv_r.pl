@@ -287,11 +287,8 @@ export_binding([X-Y|Gs]) :-
 % (numerically more stable)
 
 export_binding(Y,X) :-
-	var(Y),
-	Y = X.
-export_binding(Y,X) :-
-	nonvar(Y),
-	(   Y >= -1.0e-10,	% Y =:= 0
+	(   nonvar(Y),
+	    Y >= -1.0e-10,	% Y =:= 0
 	    Y =< 1.0e-10
 	->  X = 0.0
 	;   Y = X
