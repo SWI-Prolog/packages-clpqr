@@ -51,7 +51,7 @@
 	    ordering/1,
 	    entailed/1,
 	    clp_type/2,
-	    dump/3%, projecting_assert/1
+	    dump/3
 	]).
 :- license(gpl_swipl, 'CLP(R)').
 :- use_module(library(dialect)).
