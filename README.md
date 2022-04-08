@@ -8,7 +8,7 @@ Holzbauer and released with permission from  all above mentioned authors
 and Christian Holzbauer under the   standard  SWI-Prolog license schema:
 GPL-2 + statement to allow linking with proprietary software.
 
-The sources of this  package  are   maintained  in  packages/clpr in the
+The sources of this package  are   maintained  in  packages/clpqr in the
 SWI-Prolog  source  distribution.  The  documentation    source   is  in
 man/lib/clpr.doc as part of the overall SWI-Prolog documentation.
 
