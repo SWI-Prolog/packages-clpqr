@@ -41,7 +41,7 @@
 prolog_colour:goal_colours({Constraints}, imported(File), Colours) :-
 	clpqr_module(Module),
 	module_property(Module, file(File)), !,
-	Colours = goal(imported(File)) - ConstraintColours,
+	Colours = imported(File) - ConstraintColours,
 	constraint_colours(Constraints,	Module, ConstraintColours).
 
 clpqr_module(clpq).
