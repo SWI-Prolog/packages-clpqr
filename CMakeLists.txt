@@ -13,17 +13,16 @@ prepend(CLPQPRIV  clpq/  ${CLPQPRIV})
 prepend(CLPQRPRIV clpqr/ ${CLPQRPRIV})
 
 swipl_plugin(clpqr
-	     PL_LIB_SUBDIR clp
 	     PL_LIBS clpr.pl clpq.pl)
 swipl_plugin(clpq_priv
 	     NOINDEX
-	     PL_LIB_SUBDIR clp/clpq
+	     PL_LIB_SUBDIR clpq
 	     PL_LIBS ${CLPQPRIV})
 swipl_plugin(clpr_priv
 	     NOINDEX
-	     PL_LIB_SUBDIR clp/clpr
+	     PL_LIB_SUBDIR clpr
 	     PL_LIBS ${CLPRPRIV})
 swipl_plugin(clpqr_priv
 	     NOINDEX
-	     PL_LIB_SUBDIR clp/clpqr
+	     PL_LIB_SUBDIR clpqr
 	     PL_LIBS ${CLPQRPRIV})
