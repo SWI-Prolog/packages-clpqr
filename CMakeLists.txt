@@ -13,6 +13,7 @@ prepend(CLPQPRIV  clpq/  ${CLPQPRIV})
 prepend(CLPQRPRIV clpqr/ ${CLPQRPRIV})
 
 swipl_plugin(clpqr
+	     NOINDEX
 	     PL_LIBS clpr.pl clpq.pl)
 swipl_plugin(clpq_priv
 	     NOINDEX
