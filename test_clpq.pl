@@ -62,6 +62,7 @@ test_clpq :-
                 clpq_optimisation,
                 clpq_bb,
                 clpq_projection,
+                clpq_projection_random,
                 clpq_residuals,
                 clpq_unify,
                 clpq_examples,
@@ -776,6 +777,102 @@ test(target_must_be_list, error(type_error(list(var), foo))) :-
     dump(foo, _, _).
 
 :- end_tests(clpq_projection).
+
+%   dump/3 on seeded random systems: six variables, two to nine linear
+%   constraints of up to three terms, one to three targets.  Checked
+%   against properties every projection has, rather than against
+%   recorded output, so the test says nothing about which of several
+%   equivalent forms is returned:
+%
+%     - sound: the system entails every constraint returned;
+%     - irredundant: no constraint returned is implied by the others;
+%     - tight: each target has the same infimum and supremum under the
+%       constraints returned as under the system.
+%
+%   Fourier-Motzkin elimination has to remove the redundant inequalities
+%   it generates, which is what the second catches.
+
+:- begin_tests(clpq_projection_random).
+
+random_system(Seed, Vs, Cs, Ts) :-
+    set_random(seed(Seed)),
+    length(Vs, 6),
+    random_between(2, 9, NC),
+    length(Cs, NC),
+    maplist(random_constraint(Vs), Cs),
+    random_between(1, 3, NT),
+    length(Ts0, NT),
+    maplist(random_var(Vs), Ts0),
+    sort(Ts0, Ts).
+
+random_var(Vs, V) :-
+    random_member(V, Vs).
+
+random_constraint(Vs, C) :-
+    random_between(1, 3, N),
+    length(Terms, N),
+    maplist(random_term(Vs), Terms),
+    foldl(plus_term, Terms, 0, E),
+    random_between(-5, 5, K),
+    random_member(Op, [=<, <, >=, >, =<, >=, =:=]),
+    C =.. [Op, E, K].
+
+random_term(Vs, K*V) :-
+    random_member(K, [-3,-2,-1,1,2,3]),
+    random_member(V, Vs).
+
+plus_term(T, E0, E0+T).
+
+%   The projection of a consistent system whose targets are still free.
+projection(Seed, Ts, Names, Out) :-
+    random_system(Seed, _, Cs, Ts),
+    catch(maplist(post, Cs), _, fail),
+    maplist(var, Ts),
+    length(Ts, L),
+    length(Names, L),
+    dump(Ts, Names, Out).
+
+post(C) :- {C}.
+
+sound(Ts, Names, Out) :-
+    \+ \+ ( Names = Ts,
+            forall(member(C, Out), entailed(C)) ).
+
+irredundant(Names, Out) :-
+    forall(select(C, Out, Others),
+           \+ ( copy_term(Names-(C-Others), _-(C1-Others1)),
+                 maplist(post, Others1),
+                 entailed(C1) )).
+
+tight(Ts, Names, Out) :-
+    forall(nth1(I, Ts, T),
+           ( bounds(T, Inf, Sup),
+             \+ \+ ( maplist(post, Out),
+                     nth1(I, Names, N),
+                     bounds(N, Inf, Sup) ) )).
+
+bounds(V, Inf, Sup) :-
+    ( inf(V, I) -> Inf = I ; Inf = none ),
+    ( sup(V, S) -> Sup = S ; Sup = none ).
+
+%   Seeds 1..1000, and the seeds below 6000 that catch a prefilter/2
+%   that ignores the t_lU and t_Lu bound types: the variable is then not
+%   eliminated, and the projection is wrong for no other reason.
+
+seed(Seed) :-
+    between(1, 1000, Seed).
+seed(Seed) :-
+    member(Seed, [551, 710, 1213, 2383, 2985, 3666, 4473, 5089, 5606]).
+
+test(projection, [forall(seed(Seed))]) :-
+    (   projection(Seed, Ts, Names, Out)
+    ->  assertion(sound(Ts, Names, Out)),
+        assertion(irredundant(Names, Out)),
+        assertion(tight(Ts, Names, Out))
+    ;   true                            % inconsistent, or a target bound
+    ).
+
+:- end_tests(clpq_projection_random).
 
 		 /*******************************
 		 *         RESIDUALS		*

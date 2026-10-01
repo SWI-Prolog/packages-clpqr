@@ -50,6 +50,8 @@
 	    pivot/5,	
 	    var_with_def_intern/4
 	]).
+:- use_module(library(lists), [reverse/2]).
+:- use_module(library(ordsets), [ord_memberchk/2]).
 :- use_module('../clpqr/class',
 	[
 	    class_allvars/2
@@ -69,7 +71,6 @@
 	    add_linear_11/3,
 	    add_linear_f1/4,
 	    indep/2,
-	    nf_coeff_of/3,
 	    normalize_scalar/2
 	]).
 		
@@ -83,18 +84,66 @@ fm_elim(Vs,Target,Pivots) :-
 %
 % filters out target variables and variables that do not occur in bounded linear equations.
 % Stores that the variables in Res are to be kept independent.
+%
+% Which variables occur in a bounded equation is found in one walk over
+% each class involved, collecting the order variables of the bounded
+% equations, rather than in one walk per variable.
 
-prefilter([],[]).
-prefilter([V|Vs],Res) :-
+prefilter(Vs,Res) :-
+	var_classes(Vs,[],Classes),
+	bounded_ords(Classes,Ords0,[]),
+	sort(Ords0,Ords),
+	prefilter(Vs,Ords,Res).
+
+prefilter([],_,[]).
+prefilter([V|Vs],Ords,Res) :-
 	(   get_attr(V,clpqr_itf,Att),
 	    arg(9,Att,n),
-	    occurs(V)
+	    arg(5,Att,order(OrdV)),
+	    ord_memberchk(OrdV,Ords)
 	->  % V is a nontarget variable that occurs in a bounded linear equation
 	    Res = [V|Tail],
 	    setarg(10,Att,keep_indep),
-	    prefilter(Vs,Tail)
-	;   prefilter(Vs,Res)
+	    prefilter(Vs,Ords,Tail)
+	;   prefilter(Vs,Ords,Res)
 	).
+
+var_classes([],Classes,Classes).
+var_classes([V|Vs],Classes0,Classes) :-
+	(   get_attr(V,clpqr_itf,Att),
+	    arg(6,Att,class(C)),
+	    \+ memberchk_eq(C,Classes0)
+	->  var_classes(Vs,[C|Classes0],Classes)
+	;   var_classes(Vs,Classes0,Classes)
+	).
+
+% bounded_ords(Classes,Ords,Tail)
+%
+% Ords are the order variables of the variables occurring in the linear
+% equation of a dependent variable with a bound =\= t_none, in Classes.
+
+bounded_ords([],Ords,Ords).
+bounded_ords([C|Cs],Ords0,Ords) :-
+	class_allvars(C,All),
+	bounded_ords_vars(All,Ords0,Ords1),
+	bounded_ords(Cs,Ords1,Ords).
+
+bounded_ords_vars(De,Ords,Ords) :-
+	var(De),
+	!.
+bounded_ords_vars([D|De],Ords0,Ords) :-
+	(   get_attr(D,clpqr_itf,Att),
+	    arg(2,Att,type(Type)),
+	    occ_type_filter(Type),
+	    arg(4,Att,lin([_,_|Hom]))
+	->  hom_ords(Hom,Ords0,Ords1)
+	;   Ords1 = Ords0
+	),
+	bounded_ords_vars(De,Ords1,Ords).
+
+hom_ords([],Ords,Ords).
+hom_ords([l(_,Ord)|Ts],[Ord|Ords0],Ords) :-
+	hom_ords(Ts,Ords0,Ords).
 
 %
 % the target variables are marked with an attribute, and we get a list
@@ -104,19 +153,19 @@ fm_elim_int([],_,Pivots) :-	% done
 	unkeep(Pivots).
 fm_elim_int(Vs,Target,Pivots) :-
 	Vs = [_|_],
-	(   best(Vs,Best,Rest)
-	->  occurences(Best,Occ),
-	    elim_min(Best,Occ,Target,Pivots,NewPivots)
+	(   best(Vs,Best,Occ,Rest)
+	->  elim_min(Best,Occ,Target,Pivots,NewPivots)
 	;   % give up
 	    NewPivots = Pivots,
 	    Rest = []
 	),
 	fm_elim_int(Rest,Target,NewPivots).
 
-% best(Vs,Best,Rest)
+% best(Vs,Best,Occ,Rest)
 %
-% Finds the variable with the best result (lowest Delta) and returns the
-% other variables in Rest.  Delta is the number of inequalities that
+% Finds the variable with the best result (lowest Delta) and returns its
+% occurrences in Occ, as occurences/2 gives them, and the other variables
+% in Rest.  Delta is the number of inequalities that
 % eliminating the variable adds: those it generates minus those it
 % removes.  Candidates are the independent non-target variables in Vs;
 % target variables and variables that only occur in unbounded equations
@@ -127,13 +176,15 @@ fm_elim_int(Vs,Target,Pivots) :-
 % class, rather than one walk per candidate (occurences/2), which made
 % choosing a variable quadratic in the size of the class.
 
-best(Vs,Best,Rest) :-
+best(Vs,Best,Occ,Rest) :-
 	candidates(Vs,1,Cands,[],Classes),
 	cand_pairs(Cands,Pairs0),
 	keysort(Pairs0,Pairs),	% on the order variable, as linear forms are
 	occurrences_in_classes(Classes,Pairs),
 	cand_deltas(Cands,Deltas),
 	keysort(Deltas,[_-N|_]),
+	memberchk(c(N,_,occ(Occ0)),Cands),
+	reverse(Occ0,Occ),	% collected in reverse class order
 	select_nth(Vs,N,Best,Rest).
 
 % candidates(Vs,N,Cands,Classes0,Classes)
@@ -516,39 +567,6 @@ cp_card_upper(_,_,Si,Si).
 
 % ------------------------------------------------------------------------------
 
-% occurences(V,Occ)
-%
-% Returns in Occ the occurrences of variable V in the linear equations of dependent variables
-% with bound =\= t_none in the form of D:K where D is a dependent variable and K is the scalar
-% of V in the linear equation of D.
-
-occurences(V,Occ) :-
-	get_attr(V,clpqr_itf,Att),
-	arg(5,Att,order(OrdV)),
-	arg(6,Att,class(C)),
-	class_allvars(C,All),
-	occurences(All,OrdV,Occ).
-
-% occurences(De,OrdV,Occ)
-%
-% Returns in Occ the occurrences of variable V with order OrdV in the linear equations of
-% dependent variables De with bound =\= t_none in the form of D:K where D is a dependent
-% variable and K is the scalar of V in the linear equation of D.
-
-occurences(De,_,[]) :-
-	var(De),
-	!.
-occurences([D|De],OrdV,Occ) :-
-	(   get_attr(D,clpqr_itf,Att),
-	    arg(2,Att,type(Type)),
-	    arg(4,Att,lin(Lin)),
-	    occ_type_filter(Type),
-	    nf_coeff_of(Lin,OrdV,K)
-	->  Occ = [D:K|Occt],
-	    occurences(De,OrdV,Occt)
-	;   occurences(De,OrdV,Occ)
-	).
-
 % occ_type_filter(Type)
 %
 % Succeeds when Type is any other type than t_none. Is used in occurences/3 and occurs/2
@@ -560,34 +578,3 @@ occ_type_filter(t_L(_)).
 occ_type_filter(t_U(_)).
 occ_type_filter(t_lU(_,_)).
 occ_type_filter(t_Lu(_,_)).
-
-% occurs(V)
-%
-% Checks whether variable V occurs in a linear equation of a dependent variable with a bound
-% =\= t_none.
-
-occurs(V) :-
-	get_attr(V,clpqr_itf,Att),
-	arg(5,Att,order(OrdV)),
-	arg(6,Att,class(C)),
-	class_allvars(C,All),
-	occurs(All,OrdV).
-
-% occurs(De,OrdV)
-%
-% Checks whether variable V with order OrdV occurs in a linear equation of any dependent variable
-% in De with a bound =\= t_none.
-
-occurs(De,_) :-
-	var(De),
-	!,
-	fail.
-occurs([D|De],OrdV) :-
-	(   get_attr(D,clpqr_itf,Att),
-	    arg(2,Att,type(Type)),
-	    arg(4,Att,lin(Lin)),
-	    occ_type_filter(Type),
-	    nf_coeff_of(Lin,OrdV,_)
-	->  true
-	;   occurs(De,OrdV)
-	).
