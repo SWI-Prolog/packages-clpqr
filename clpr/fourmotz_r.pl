@@ -115,43 +115,124 @@ fm_elim_int(Vs,Target,Pivots) :-
 
 % best(Vs,Best,Rest)
 %
-% Finds the variable with the best result (lowest Delta) in fm_cp_filter
-% and returns the other variables in Rest.
+% Finds the variable with the best result (lowest Delta) and returns the
+% other variables in Rest.  Delta is the number of inequalities that
+% eliminating the variable adds: those it generates minus those it
+% removes.  Candidates are the independent non-target variables in Vs;
+% target variables and variables that only occur in unbounded equations
+% should have been removed from Vs by prefilter/2.  On equal Delta the
+% candidate that comes first in Vs wins.
+%
+% The occurrences of all candidates are collected in one walk over each
+% class, rather than one walk per candidate (occurences/2), which made
+% choosing a variable quadratic in the size of the class.
 
 best(Vs,Best,Rest) :-
-	findall(Delta-N,fm_cp_filter(Vs,Delta,N),Deltas),
+	candidates(Vs,1,Cands,[],Classes),
+	cand_pairs(Cands,Pairs0),
+	keysort(Pairs0,Pairs),	% on the order variable, as linear forms are
+	occurrences_in_classes(Classes,Pairs),
+	cand_deltas(Cands,Deltas),
 	keysort(Deltas,[_-N|_]),
 	select_nth(Vs,N,Best,Rest).
 
-% fm_cp_filter(Vs,Delta,N)
+% candidates(Vs,N,Cands,Classes0,Classes)
 %
-% For an indepenent variable V in Vs, which is the N'th element in Vs,
-% find how many inequalities are generated when this variable is eliminated.
-% Note that target variables and variables that only occur in unbounded equations
-% should have been removed from Vs via prefilter/2
-
-fm_cp_filter(Vs,Delta,N) :-
-	length(Vs,Len),	% Len = number of variables in Vs
-	mem(Vs,X,Vst),	% Selects a variable X in Vs, Vst is the list of elements after X in Vs
-	get_attr(X,clpqr_itf,Att),
-	arg(4,Att,lin(Lin)),
-	arg(5,Att,order(OrdX)),
-	arg(9,Att,n),	% no target variable
-	indep(Lin,OrdX),	% X is an independent variable
-	occurences(X,Occ),	
-	Occ = [_|_],
-	cp_card(Occ,0,Lnew),
-	length(Occ,Locc),
-	Delta is Lnew-Locc,
-	length(Vst,Vstl),
-	N is Len-Vstl.	% X is the Nth element in Vs
-
-% mem(Xs,X,XsT)
+% Cands is a list of c(N,OrdX,occ(Occ)) for each candidate X in Vs, N
+% being its position in Vs, OrdX its order variable and Occ its
+% occurrences, still to be collected.  Classes are the classes of the
+% candidates, each once.
 %
-% If X is a member of Xs, XsT is the list of elements after X in Xs.
+% The order variables are compared, never changed: every linear form is
+% kept sorted on them, and an attribute put on one would move it in the
+% standard order of terms.
 
-mem([X|Xs],X,Xs).
-mem([_|Ys],X,Xs) :- mem(Ys,X,Xs).
+candidates([],_,[],Classes,Classes).
+candidates([X|Xs],N,Cands,Classes0,Classes) :-
+	N1 is N+1,
+	(   get_attr(X,clpqr_itf,Att),
+	    arg(4,Att,lin(Lin)),
+	    arg(5,Att,order(OrdX)),
+	    arg(9,Att,n),	% no target variable
+	    indep(Lin,OrdX)	% X is an independent variable
+	->  arg(6,Att,class(C)),
+	    Cands = [c(N,OrdX,occ([]))|Cands1],
+	    (   memberchk_eq(C,Classes0)
+	    ->  Classes1 = Classes0
+	    ;   Classes1 = [C|Classes0]
+	    ),
+	    candidates(Xs,N1,Cands1,Classes1,Classes)
+	;   candidates(Xs,N1,Cands,Classes0,Classes)
+	).
+
+memberchk_eq(X,[Y|Ys]) :-
+	(   X == Y
+	->  true
+	;   memberchk_eq(X,Ys)
+	).
+
+cand_pairs([],[]).
+cand_pairs([c(_,Ord,Occ)|Cs],[Ord-Occ|Ps]) :-
+	cand_pairs(Cs,Ps).
+
+% occurrences_in_classes(Classes,Pairs)
+%
+% Adds D:K to the occurrences of each candidate in Pairs, an OrdX-occ(Occ)
+% list sorted on OrdX, for each dependent variable D with a bound whose
+% linear equation holds the candidate with scalar K.  This is what
+% occurences/2 finds for one variable.
+
+occurrences_in_classes([],_).
+occurrences_in_classes([C|Cs],Pairs) :-
+	class_allvars(C,All),
+	occurrences_in_vars(All,Pairs),
+	occurrences_in_classes(Cs,Pairs).
+
+occurrences_in_vars(De,_) :-
+	var(De),
+	!.
+occurrences_in_vars([D|De],Pairs) :-
+	(   get_attr(D,clpqr_itf,Att),
+	    arg(2,Att,type(Type)),
+	    occ_type_filter(Type),
+	    arg(4,Att,lin([_,_|Hom]))
+	->  occurrences_in_hom(Hom,Pairs,D)
+	;   true
+	),
+	occurrences_in_vars(De,Pairs).
+
+% Merge two lists sorted on the order variable.
+
+occurrences_in_hom([],_,_) :- !.
+occurrences_in_hom(_,[],_) :- !.
+occurrences_in_hom([T|Ts],[O-Occ|Ps],D) :-
+	T = l(_*K,OT),
+	compare(Rel,OT,O),
+	(   Rel = (=)
+	->  arg(1,Occ,L),
+	    setarg(1,Occ,[D:K|L]),
+	    occurrences_in_hom(Ts,Ps,D)
+	;   Rel = (<)
+	->  occurrences_in_hom(Ts,[O-Occ|Ps],D)
+	;   occurrences_in_hom([T|Ts],Ps,D)
+	).
+
+% cand_deltas(Cands,Deltas)
+%
+% Deltas is a list of Delta-N for each candidate that occurs in a bounded
+% equation.  cp_card/3 counts pairs, so the order of the occurrences
+% does not matter.
+
+cand_deltas([],[]).
+cand_deltas([c(N,_,occ(Occ))|Cs],Deltas) :-
+	(   Occ = [_|_]
+	->  cp_card(Occ,0,Lnew),
+	    length(Occ,Locc),
+	    Delta is Lnew-Locc,
+	    Deltas = [Delta-N|Deltas1]
+	;   Deltas = Deltas1
+	),
+	cand_deltas(Cs,Deltas1).
 
 % select_nth(List,N,Nth,Others)
 %
@@ -169,13 +250,21 @@ select_nth([Y|Ys],M,N,X,[Y|Xs]) :-
 % fm_detach + reverse_pivot introduce indep t_none, which
 % invalidates the invariants
 %
+%
+% Only the new inequalities can be redundant.  Before the step no bound
+% is: project_attributes/2 and every earlier step removed those.  The
+% step removes the bounds of the occurrences of V and adds inequalities
+% that follow from them, so what the other bounds imply can only shrink
+% and none of them becomes redundant.  Checking the whole class here
+% made every elimination step cost a simplex run per bounded variable.
+%
 elim_min(V,Occ,Target,Pivots,NewPivots) :-
 	crossproduct(Occ,New,[]),
-	activate_crossproduct(New),
+	activate_crossproduct(New,NewVars),
 	reverse_pivot(Pivots),
 	fm_detach(Occ),
 	allvars(V,All),
-	redundancy_vars(All),			% only for New \== []
+	redundancy_vars(NewVars),
 	make_target_indep(Target,NewPivots),
 	drop_dep(All).
 
@@ -214,17 +303,18 @@ fm_detach([V:_|Vs]) :-
 	detach_bounds(V),
 	fm_detach(Vs).
 
-% activate_crossproduct(Lst)
+% activate_crossproduct(Lst,Vars)
 %
 % For each inequality Lin =< 0 (or Lin < 0) in Lst, a new variable is created:
-% Var = Lin and Var =< 0 (or Var < 0). Var is added to the basis.
+% Var = Lin and Var =< 0 (or Var < 0). Var is added to the basis.  Vars
+% are the new variables.
 
-activate_crossproduct([]).
-activate_crossproduct([lez(Strict,Lin)|News]) :-
+activate_crossproduct([],[]).
+activate_crossproduct([lez(Strict,Lin)|News],[Var|Vars]) :-
 	var_with_def_intern(t_u(0.0),Var,Lin,Strict),
 	% Var belongs to same class as elements in Lin
 	basis_add(Var,_),
-	activate_crossproduct(News).
+	activate_crossproduct(News,Vars).
 
 % ------------------------------------------------------------------------------
 

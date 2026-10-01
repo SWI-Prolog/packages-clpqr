@@ -940,6 +940,27 @@ test(fourier_motzkin_two_sided, true(C = [x >= _, x =< _])) :-
     {X - Y =< 1, Y - X =< 1, Y >= 0, Y =< 10},
     dump([X], [x], C).
 
+% Eliminating a variable adds inequalities that may be redundant, and
+% only those are checked for redundancy; x =< 5 is generated from
+% x =< y, y =< 5 and is implied by x =< 3.
+test(fourier_motzkin_new_row_redundant, true((C = [x =< B], abs(B-3) < 1.0e-9))) :-
+    {X =< Y, Y =< 5, X =< 3},
+    dump([X], [x], C).
+test(fourier_motzkin_longer_chain, true(C = [a-e =< _])) :-
+    {A =< B, B =< C0, C0 =< D, D =< E},
+    dump([A,E], [a,e], C).
+% The variables to eliminate are in two classes.
+test(fourier_motzkin_two_classes, true(C = [u >= _, x =< _])) :-
+    {X =< Y, Y =< 1, U >= V, V >= 2},
+    dump([X,U], [x,u], C).
+test(fourier_motzkin_strict, true(C = [x < _])) :-
+    {X < Y, Y =< Z, Z < 4},
+    dump([X], [x], C).
+% Two variables to eliminate, each generating as many inequalities.
+test(fourier_motzkin_cycle, true((C = [x >= L, x =< H], abs(L+2) < 1.0e-9, abs(H-12) < 1.0e-9))) :-
+    {X - Y =< 1, Y - Z =< 1, Z - X =< 1, Y >= 0, Z =< 10},
+    dump([X], [x], C).
+
 % Aliasing variables with different bound types re-posts the bounds of one
 % on the other (verify_type_var/5 in itf_r.pl).
 

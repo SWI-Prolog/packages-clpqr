@@ -1085,6 +1085,27 @@ test(fourier_motzkin_chain, C == [x-w =< 0]) :-
 test(fourier_motzkin_two_sided, C == [x >= -1, x =< 11]) :-
     {X - Y =< 1, Y - X =< 1, Y >= 0, Y =< 10},
     dump([X], [x], C).
+
+% Eliminating a variable adds inequalities that may be redundant, and
+% only those are checked for redundancy; x =< 5 is generated from
+% x =< y, y =< 5 and is implied by x =< 3.
+test(fourier_motzkin_new_row_redundant, C == [x =< 3]) :-
+    {X =< Y, Y =< 5, X =< 3},
+    dump([X], [x], C).
+test(fourier_motzkin_longer_chain, C == [a-e =< 0]) :-
+    {A =< B, B =< C0, C0 =< D, D =< E},
+    dump([A,E], [a,e], C).
+% The variables to eliminate are in two classes.
+test(fourier_motzkin_two_classes, C == [u >= 2, x =< 1]) :-
+    {X =< Y, Y =< 1, U >= V, V >= 2},
+    dump([X,U], [x,u], C).
+test(fourier_motzkin_strict, C == [x < 4]) :-
+    {X < Y, Y =< Z, Z < 4},
+    dump([X], [x], C).
+% Two variables to eliminate, each generating as many inequalities.
+test(fourier_motzkin_cycle, C == [x >= -2, x =< 12]) :-
+    {X - Y =< 1, Y - Z =< 1, Z - X =< 1, Y >= 0, Z =< 10},
+    dump([X], [x], C).
 test(redundant_two_sided, C == [x >= 1, x =< 5]) :-
     {X >= 1, X =< 5, X >= 0, X =< 10},
     dump([X], [x], C).
